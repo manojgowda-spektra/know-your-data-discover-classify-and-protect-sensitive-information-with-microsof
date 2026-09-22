@@ -194,11 +194,7 @@
           "allowExtensionOperations": true,
           "windowsConfiguration": {
             "provisionVMAgent": true,
-            "enableAutomaticUpdates": true,
-            "patchSettings": {
-              "assessmentMode": "AutomaticByPlatform",
-              "patchMode": "AutomaticByOS"
-            }
+            "enableAutomaticUpdates": false
           }
         },
         "storageProfile": {
@@ -271,7 +267,7 @@
         "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('LabVMName'), 'CloudLabsBootstrap')]"
       ],
       "properties": {
-        "status": "Enabled",
+        "status": "Disabled",
         "taskType": "ComputeVmShutdownTask",
         "dailyRecurrence": {
           "time": "[parameters('autoShutdownTime')]"
