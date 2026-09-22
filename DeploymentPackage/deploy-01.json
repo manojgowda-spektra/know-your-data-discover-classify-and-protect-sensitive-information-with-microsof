@@ -2,23 +2,43 @@
   "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "azureUserName": { "type": "string" },
-    "azurePassword": { "type": "securestring" },
-    "ODLID": { "type": "string" },
-    "DeploymentID": { "type": "string" },
-    "adminUsername": { "type": "string" },
-    "adminPassword": { "type": "securestring" },
-    "trainerUserName": { "type": "string" },
-    "trainerUserPassword": { "type": "securestring" },
+    "azureUserName": {
+      "type": "string"
+    },
+    "azurePassword": {
+      "type": "securestring"
+    },
+    "ODLID": {
+      "type": "string"
+    },
+    "DeploymentID": {
+      "type": "string"
+    },
+    "adminUsername": {
+      "type": "string"
+    },
+    "adminPassword": {
+      "type": "securestring"
+    },
+    "trainerUserName": {
+      "type": "string"
+    },
+    "trainerUserPassword": {
+      "type": "securestring"
+    },
     "autoShutdownTime": {
       "type": "string",
       "defaultValue": "1900",
-      "metadata": { "description": "Daily VM shutdown time in 24-hour HHmm format. The default allows a full six-hour daytime lab session before shutdown." }
+      "metadata": {
+        "description": "Daily VM shutdown time in 24-hour HHmm format. The default allows a full six-hour daytime lab session before shutdown."
+      }
     },
     "autoShutdownTimeZone": {
       "type": "string",
       "defaultValue": "UTC",
-      "metadata": { "description": "Windows time zone identifier used by the VM auto-shutdown schedule." }
+      "metadata": {
+        "description": "Windows time zone identifier used by the VM auto-shutdown schedule."
+      }
     }
   },
   "variables": {
@@ -73,15 +93,23 @@
       "name": "[variables('vnetName')]",
       "location": "[resourceGroup().location]",
       "tags": "[variables('tags')]",
-      "dependsOn": ["[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"],
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
+      ],
       "properties": {
-        "addressSpace": { "addressPrefixes": ["10.20.0.0/16"] },
+        "addressSpace": {
+          "addressPrefixes": [
+            "10.20.0.0/16"
+          ]
+        },
         "subnets": [
           {
             "name": "[variables('subnetName')]",
             "properties": {
               "addressPrefix": "10.20.0.0/24",
-              "networkSecurityGroup": { "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]" },
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
+              },
               "privateEndpointNetworkPolicies": "Enabled",
               "privateLinkServiceNetworkPolicies": "Enabled"
             }
@@ -95,12 +123,16 @@
       "name": "[variables('publicIpName')]",
       "location": "[resourceGroup().location]",
       "tags": "[variables('tags')]",
-      "sku": { "name": "Standard" },
+      "sku": {
+        "name": "Standard"
+      },
       "properties": {
         "publicIPAllocationMethod": "Static",
         "publicIPAddressVersion": "IPv4",
         "idleTimeoutInMinutes": 30,
-        "dnsSettings": { "domainNameLabel": "[variables('dnsLabel')]" }
+        "dnsSettings": {
+          "domainNameLabel": "[variables('dnsLabel')]"
+        }
       }
     },
     {
@@ -123,8 +155,12 @@
               "primary": true,
               "privateIPAllocationMethod": "Dynamic",
               "privateIPAddressVersion": "IPv4",
-              "subnet": { "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('subnetName'))]" },
-              "publicIPAddress": { "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIpName'))]" }
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('subnetName'))]"
+              },
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIpName'))]"
+              }
             }
           }
         ]
@@ -136,13 +172,20 @@
       "name": "[variables('LabVMName')]",
       "location": "[resourceGroup().location]",
       "tags": "[variables('tags')]",
-      "dependsOn": ["[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"],
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+      ],
       "properties": {
         "licenseType": "Windows_Client",
-        "hardwareProfile": { "vmSize": "Standard_B2s" },
+        "hardwareProfile": {
+          "vmSize": "Standard_B2s"
+        },
         "securityProfile": {
           "securityType": "TrustedLaunch",
-          "uefiSettings": { "secureBootEnabled": true, "vTpmEnabled": true }
+          "uefiSettings": {
+            "secureBootEnabled": true,
+            "vTpmEnabled": true
+          }
         },
         "osProfile": {
           "computerName": "[variables('computerName')]",
@@ -152,7 +195,10 @@
           "windowsConfiguration": {
             "provisionVMAgent": true,
             "enableAutomaticUpdates": true,
-            "patchSettings": { "assessmentMode": "AutomaticByPlatform", "patchMode": "AutomaticByOS" }
+            "patchSettings": {
+              "assessmentMode": "AutomaticByPlatform",
+              "patchMode": "AutomaticByOS"
+            }
           }
         },
         "storageProfile": {
@@ -167,18 +213,27 @@
             "createOption": "FromImage",
             "caching": "ReadWrite",
             "deleteOption": "Delete",
-            "managedDisk": { "storageAccountType": "StandardSSD_LRS" }
+            "managedDisk": {
+              "storageAccountType": "StandardSSD_LRS"
+            }
           }
         },
         "networkProfile": {
           "networkInterfaces": [
             {
               "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]",
-              "properties": { "primary": true, "deleteOption": "Delete" }
+              "properties": {
+                "primary": true,
+                "deleteOption": "Delete"
+              }
             }
           ]
         },
-        "diagnosticsProfile": { "bootDiagnostics": { "enabled": true } }
+        "diagnosticsProfile": {
+          "bootDiagnostics": {
+            "enabled": true
+          }
+        }
       }
     },
     {
@@ -187,14 +242,20 @@
       "name": "[concat(variables('LabVMName'), '/CloudLabsBootstrap')]",
       "location": "[resourceGroup().location]",
       "tags": "[variables('tags')]",
-      "dependsOn": ["[resourceId('Microsoft.Compute/virtualMachines', variables('LabVMName'))]"],
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines', variables('LabVMName'))]"
+      ],
       "properties": {
         "publisher": "Microsoft.Compute",
         "type": "CustomScriptExtension",
         "typeHandlerVersion": "1.10",
         "autoUpgradeMinorVersion": true,
         "enableAutomaticUpgrade": true,
-        "settings": { "fileUris": ["[variables('scripturl')]"] },
+        "settings": {
+          "fileUris": [
+            "[variables('scripturl')]"
+          ]
+        },
         "protectedSettings": {
           "commandToExecute": "[concat('powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File psscript-01.ps1 -AzureUserName \"', parameters('azureUserName'), '\" -AzurePassword \"', parameters('azurePassword'), '\" -AzureTenantID \"', subscription().tenantId, '\" -AzureSubscriptionID \"', subscription().subscriptionId, '\" -DeploymentID \"', parameters('DeploymentID'), '\" -vmAdminUsername \"', parameters('adminUsername'), '\" -vmAdminPassword \"', parameters('adminPassword'), '\" -trainerUserName \"', parameters('trainerUserName'), '\" -trainerUserPassword \"', parameters('trainerUserPassword'), '\"')]"
         }
@@ -206,11 +267,15 @@
       "name": "[variables('autoShutdownScheduleName')]",
       "location": "[resourceGroup().location]",
       "tags": "[variables('tags')]",
-      "dependsOn": ["[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('LabVMName'), 'CloudLabsBootstrap')]"],
+      "dependsOn": [
+        "[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('LabVMName'), 'CloudLabsBootstrap')]"
+      ],
       "properties": {
         "status": "Enabled",
         "taskType": "ComputeVmShutdownTask",
-        "dailyRecurrence": { "time": "[parameters('autoShutdownTime')]" },
+        "dailyRecurrence": {
+          "time": "[parameters('autoShutdownTime')]"
+        },
         "timeZoneId": "[parameters('autoShutdownTimeZone')]",
         "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', variables('LabVMName'))]",
         "notificationSettings": {
@@ -223,12 +288,33 @@
     }
   ],
   "outputs": {
-    "vmServerDnsName": { "type": "string", "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIpName')), '2024-10-01').dnsSettings.fqdn]" },
-    "vmServerUsername": { "type": "string", "value": "[parameters('adminUsername')]" },
-    "vmServerPassword": { "type": "string", "value": "[parameters('adminPassword')]" },
-    "trainerUserName": { "type": "string", "value": "[parameters('trainerUserName')]" },
-    "trainerUserPassword": { "type": "string", "value": "[parameters('trainerUserPassword')]" },
-    "VMComputerName": { "type": "string", "value": "[variables('computerName')]" },
-    "AzureRegion": { "type": "string", "value": "[resourceGroup().location]" }
+    "LabVM DNS Name": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIpName')), '2024-10-01').dnsSettings.fqdn]"
+    },
+    "LabVM Admin Username": {
+      "type": "string",
+      "value": "[parameters('adminUsername')]"
+    },
+    "LabVM Admin Password": {
+      "type": "string",
+      "value": "[parameters('adminPassword')]"
+    },
+    "Trainer Username": {
+      "type": "string",
+      "value": "[parameters('trainerUserName')]"
+    },
+    "Trainer Password": {
+      "type": "string",
+      "value": "[parameters('trainerUserPassword')]"
+    },
+    "VMComputerName": {
+      "type": "string",
+      "value": "[variables('computerName')]"
+    },
+    "AzureRegion": {
+      "type": "string",
+      "value": "[resourceGroup().location]"
+    }
   }
 }
