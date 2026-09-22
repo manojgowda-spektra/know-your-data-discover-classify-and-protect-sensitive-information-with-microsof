@@ -1,0 +1,234 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "azureUserName": { "type": "string" },
+    "azurePassword": { "type": "securestring" },
+    "ODLID": { "type": "string" },
+    "DeploymentID": { "type": "string" },
+    "adminUsername": { "type": "string" },
+    "adminPassword": { "type": "securestring" },
+    "trainerUserName": { "type": "string" },
+    "trainerUserPassword": { "type": "securestring" },
+    "autoShutdownTime": {
+      "type": "string",
+      "defaultValue": "1900",
+      "metadata": { "description": "Daily VM shutdown time in 24-hour HHmm format. The default allows a full six-hour daytime lab session before shutdown." }
+    },
+    "autoShutdownTimeZone": {
+      "type": "string",
+      "defaultValue": "UTC",
+      "metadata": { "description": "Windows time zone identifier used by the VM auto-shutdown schedule." }
+    }
+  },
+  "variables": {
+    "scripturl": "https://experienceazure.blob.core.windows.net/templates/cloudlabs-common/psscript-01.ps1",
+    "LabVMName": "[concat('labvm-', parameters('DeploymentID'))]",
+    "computerName": "[concat('zava-', take(parameters('DeploymentID'), 10))]",
+    "vnetName": "[concat('vnet-', parameters('DeploymentID'))]",
+    "subnetName": "LabVMSubnet",
+    "nsgName": "[concat('nsg-', parameters('DeploymentID'))]",
+    "publicIpName": "[concat('pip-', parameters('DeploymentID'))]",
+    "nicName": "[concat('nic-', parameters('DeploymentID'))]",
+    "osDiskName": "[concat('osdisk-', parameters('DeploymentID'))]",
+    "autoShutdownScheduleName": "[concat('shutdown-computevm-', variables('LabVMName'))]",
+    "dnsLabel": "[toLower(concat('zava-', parameters('DeploymentID')))]",
+    "tags": {
+      "ODLID": "[parameters('ODLID')]",
+      "DeploymentID": "[parameters('DeploymentID')]",
+      "LabCode": "[parameters('ODLID')]",
+      "LabName": "Know Your Data",
+      "Environment": "CloudLabs"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2024-10-01",
+      "name": "[variables('nsgName')]",
+      "location": "[resourceGroup().location]",
+      "tags": "[variables('tags')]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "Allow-RDP",
+            "properties": {
+              "description": "Allow the CloudLabs learner and VM Shadow access path to connect by Remote Desktop.",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 1000,
+              "direction": "Inbound"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2024-10-01",
+      "name": "[variables('vnetName')]",
+      "location": "[resourceGroup().location]",
+      "tags": "[variables('tags')]",
+      "dependsOn": ["[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"],
+      "properties": {
+        "addressSpace": { "addressPrefixes": ["10.20.0.0/16"] },
+        "subnets": [
+          {
+            "name": "[variables('subnetName')]",
+            "properties": {
+              "addressPrefix": "10.20.0.0/24",
+              "networkSecurityGroup": { "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]" },
+              "privateEndpointNetworkPolicies": "Enabled",
+              "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2024-10-01",
+      "name": "[variables('publicIpName')]",
+      "location": "[resourceGroup().location]",
+      "tags": "[variables('tags')]",
+      "sku": { "name": "Standard" },
+      "properties": {
+        "publicIPAllocationMethod": "Static",
+        "publicIPAddressVersion": "IPv4",
+        "idleTimeoutInMinutes": 30,
+        "dnsSettings": { "domainNameLabel": "[variables('dnsLabel')]" }
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2024-10-01",
+      "name": "[variables('nicName')]",
+      "location": "[resourceGroup().location]",
+      "tags": "[variables('tags')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
+        "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIpName'))]"
+      ],
+      "properties": {
+        "enableAcceleratedNetworking": false,
+        "enableIPForwarding": false,
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "primary": true,
+              "privateIPAllocationMethod": "Dynamic",
+              "privateIPAddressVersion": "IPv4",
+              "subnet": { "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('subnetName'))]" },
+              "publicIPAddress": { "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIpName'))]" }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2024-11-01",
+      "name": "[variables('LabVMName')]",
+      "location": "[resourceGroup().location]",
+      "tags": "[variables('tags')]",
+      "dependsOn": ["[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"],
+      "properties": {
+        "licenseType": "Windows_Client",
+        "hardwareProfile": { "vmSize": "Standard_B2s" },
+        "securityProfile": {
+          "securityType": "TrustedLaunch",
+          "uefiSettings": { "secureBootEnabled": true, "vTpmEnabled": true }
+        },
+        "osProfile": {
+          "computerName": "[variables('computerName')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]",
+          "allowExtensionOperations": true,
+          "windowsConfiguration": {
+            "provisionVMAgent": true,
+            "enableAutomaticUpdates": true,
+            "patchSettings": { "assessmentMode": "AutomaticByPlatform", "patchMode": "AutomaticByOS" }
+          }
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "MicrosoftWindowsDesktop",
+            "offer": "Windows-11",
+            "sku": "win11-24h2-ent",
+            "version": "latest"
+          },
+          "osDisk": {
+            "name": "[variables('osDiskName')]",
+            "createOption": "FromImage",
+            "caching": "ReadWrite",
+            "deleteOption": "Delete",
+            "managedDisk": { "storageAccountType": "StandardSSD_LRS" }
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]",
+              "properties": { "primary": true, "deleteOption": "Delete" }
+            }
+          ]
+        },
+        "diagnosticsProfile": { "bootDiagnostics": { "enabled": true } }
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "apiVersion": "2024-11-01",
+      "name": "[concat(variables('LabVMName'), '/CloudLabsBootstrap')]",
+      "location": "[resourceGroup().location]",
+      "tags": "[variables('tags')]",
+      "dependsOn": ["[resourceId('Microsoft.Compute/virtualMachines', variables('LabVMName'))]"],
+      "properties": {
+        "publisher": "Microsoft.Compute",
+        "type": "CustomScriptExtension",
+        "typeHandlerVersion": "1.10",
+        "autoUpgradeMinorVersion": true,
+        "enableAutomaticUpgrade": true,
+        "settings": { "fileUris": ["[variables('scripturl')]"] },
+        "protectedSettings": {
+          "commandToExecute": "[concat('powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File psscript-01.ps1 -AzureUserName \"', parameters('azureUserName'), '\" -AzurePassword \"', parameters('azurePassword'), '\" -AzureTenantID \"', subscription().tenantId, '\" -AzureSubscriptionID \"', subscription().subscriptionId, '\" -DeploymentID \"', parameters('DeploymentID'), '\" -vmAdminUsername \"', parameters('adminUsername'), '\" -vmAdminPassword \"', parameters('adminPassword'), '\" -trainerUserName \"', parameters('trainerUserName'), '\" -trainerUserPassword \"', parameters('trainerUserPassword'), '\"')]"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.DevTestLab/schedules",
+      "apiVersion": "2018-09-15",
+      "name": "[variables('autoShutdownScheduleName')]",
+      "location": "[resourceGroup().location]",
+      "tags": "[variables('tags')]",
+      "dependsOn": ["[resourceId('Microsoft.Compute/virtualMachines/extensions', variables('LabVMName'), 'CloudLabsBootstrap')]"],
+      "properties": {
+        "status": "Enabled",
+        "taskType": "ComputeVmShutdownTask",
+        "dailyRecurrence": { "time": "[parameters('autoShutdownTime')]" },
+        "timeZoneId": "[parameters('autoShutdownTimeZone')]",
+        "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', variables('LabVMName'))]",
+        "notificationSettings": {
+          "status": "Disabled",
+          "timeInMinutes": 30,
+          "webhookUrl": "",
+          "emailRecipient": ""
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "vmServerDnsName": { "type": "string", "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIpName')), '2024-10-01').dnsSettings.fqdn]" },
+    "vmServerUsername": { "type": "string", "value": "[parameters('adminUsername')]" },
+    "vmServerPassword": { "type": "string", "value": "[parameters('adminPassword')]" },
+    "trainerUserName": { "type": "string", "value": "[parameters('trainerUserName')]" },
+    "trainerUserPassword": { "type": "string", "value": "[parameters('trainerUserPassword')]" },
+    "VMComputerName": { "type": "string", "value": "[variables('computerName')]" },
+    "AzureRegion": { "type": "string", "value": "[resourceGroup().location]" }
+  }
+}
