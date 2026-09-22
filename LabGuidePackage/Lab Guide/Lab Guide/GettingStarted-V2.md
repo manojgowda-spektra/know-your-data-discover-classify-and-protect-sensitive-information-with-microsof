@@ -1,6 +1,6 @@
 # Getting Started: Know Your Data — Discover, Classify and Protect Sensitive Information with Microsoft Purview
 
-### Estimated Duration: 20 minutes
+### Overall Estimated Duration: 6 Hours
 
 ## Objectives
 

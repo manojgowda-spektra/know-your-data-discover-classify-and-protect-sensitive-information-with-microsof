@@ -247,7 +247,7 @@ do {
             } | ConvertTo-Json
         }
 
-        Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+        Push-OutputBinding -Clobber -Name Response -Value ([HttpResponseContext]@{
             StatusCode = [HttpStatusCode]::OK
             Body       = $message
         })
@@ -261,7 +261,7 @@ do {
             Status  = 'Failed'
             Message = "Error during Zava Endpoint DLP configuration check for $scope. Attempt $count of 3. Error: $($_.Exception.Message)"
         } | ConvertTo-Json
-        Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+        Push-OutputBinding -Clobber -Name Response -Value ([HttpResponseContext]@{
             StatusCode = [HttpStatusCode]::OK
             Body       = $message
         })
@@ -276,7 +276,7 @@ if (-not $found) {
         Status  = 'Failed'
         Message = "Validate-Zava-Endpoint-DLP did not find a fully compliant immediate tenant configuration after 3 attempts for $scope. Sensitive service domain group membership remains a required portal cross-check because Microsoft exposes no supported public enumeration cmdlet/API."
     } | ConvertTo-Json
-    Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+    Push-OutputBinding -Clobber -Name Response -Value ([HttpResponseContext]@{
         StatusCode = [HttpStatusCode]::OK
         Body       = $message
     })

@@ -2,7 +2,7 @@
   "name": "Know Your Data - Discover, Classify and Protect Sensitive Information with Microsoft Purview",
   "cloud": "azure",
   "level": "Intermediate",
-  "deploymentDurationMinutes": 360,
+  "deploymentDurationMinutes": 30,
   "enableLabValidation": true,
   "hasInlineQuestions": false,
   "customPolicy": true,

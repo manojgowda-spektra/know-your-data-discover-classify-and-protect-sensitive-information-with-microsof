@@ -277,7 +277,14 @@ do {
         Import-Module Microsoft.Online.SharePoint.PowerShell -ErrorAction Stop
         $spoAdminUrl = $env:M365_VALIDATOR_SPO_ADMIN_URL
         if (-not $spoAdminUrl) { $spoAdminUrl = "https://$(($organization -split '\.')[0])-admin.sharepoint.com" }
-        Connect-SPOService -Url $spoAdminUrl -ClientId $appId -TenantId $organization -CertificateThumbprint $thumbprint -ErrorAction Stop
+        # Connect-SPOService -TenantId requires the tenant GUID, not the *.onmicrosoft.com domain.
+        # Prefer an operator-supplied GUID; otherwise derive it from the authenticated Azure context.
+        $spoTenantId = $env:M365_VALIDATOR_TENANT_ID
+        if (-not $spoTenantId) { $spoTenantId = (Get-AzContext).Tenant.Id }
+        if ($spoTenantId -notmatch '^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$') {
+            throw "Connect-SPOService requires a tenant GUID; resolved '$spoTenantId'. Set M365_VALIDATOR_TENANT_ID to the directory (tenant) ID."
+        }
+        Connect-SPOService -Url $spoAdminUrl -ClientId $appId -TenantId $spoTenantId -CertificateThumbprint $thumbprint -ErrorAction Stop
         $spoTenant = Get-SPOTenant -ErrorAction Stop
         if (-not (Test-TrueValue $spoTenant.EnableAIPIntegration)) { $failures.Add("SharePoint/OneDrive EnableAIPIntegration is '$($spoTenant.EnableAIPIntegration)'; expected True.") }
 
@@ -306,19 +313,19 @@ do {
                 Message = "Exchange Online (Get-AdminAuditLogConfig).UnifiedAuditLogIngestionEnabled=True; SharePoint/OneDrive EnableAIPIntegration=True; Group.Unified EnableMIPLabels=True; all four exact Zava labels, 'Zava Global Label Policy', and simulated 'Zava Auto-Label Policy' with 'Zava High-Risk Identity Data Rule' satisfy the required immediate configuration. Sensitivity-label-conditioned DLP scope is compliant. Validated for $scope."
             } | ConvertTo-Json
         } else {
-            $message = @{ Status = 'Failed'; Message = "Validate-Zava-Information-Protection failed for $scope: $($failures -join ' ')" } | ConvertTo-Json
+            $message = @{ Status = 'Failed'; Message = "Validate-Zava-Information-Protection failed for ${scope}: $($failures -join ' ')" } | ConvertTo-Json
         }
-        Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{ StatusCode = [HttpStatusCode]::OK; Body = $message })
+        Push-OutputBinding -Clobber -Name Response -Value ([HttpResponseContext]@{ StatusCode = [HttpStatusCode]::OK; Body = $message })
         if (-not $found -and $count -lt 3) { Start-Sleep -Seconds 10 }
     }
     catch {
         $message = @{ Status = 'Failed'; Message = "Error during Validate-Zava-Information-Protection. Attempt $count of 3. Error: $($_.Exception.Message)" } | ConvertTo-Json
-        Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{ StatusCode = [HttpStatusCode]::OK; Body = $message })
+        Push-OutputBinding -Clobber -Name Response -Value ([HttpResponseContext]@{ StatusCode = [HttpStatusCode]::OK; Body = $message })
         Start-Sleep -Seconds 10
     }
 } while ($count -lt 3 -and -not $found)
 
 if (-not $found) {
     $message = @{ Status = 'Failed'; Message = "Validate-Zava-Information-Protection did not meet the required immediate tenant configuration after 3 attempts for $scope." } | ConvertTo-Json
-    Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{ StatusCode = [HttpStatusCode]::OK; Body = $message })
+    Push-OutputBinding -Clobber -Name Response -Value ([HttpResponseContext]@{ StatusCode = [HttpStatusCode]::OK; Body = $message })
 }
