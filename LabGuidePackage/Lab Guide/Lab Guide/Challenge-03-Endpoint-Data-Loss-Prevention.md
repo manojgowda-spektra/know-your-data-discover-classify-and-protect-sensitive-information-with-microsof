@@ -66,7 +66,7 @@ In this task, you will create an enforcing, Devices-only policy with an explicit
 
 In this task, you will create the exact custom sensitive service domain group used by the upload policy.
 
-1. Open **Data loss prevention** > **Settings** (gear icon in the upper-left corner) > **Data Loss Prevention** > **Endpoint settings** > **Browser and domain restrictions to sensitive data**.
+1. Open **Data loss prevention** > **Settings** (gear icon in the upper-left corner) > **Data Loss Prevention** > **Endpoint DLP settings** > **Browser and domain restrictions to sensitive data**.
 2. Set **Service domains** to **Block**. Add the following cloud service domains to the blocked service-domain list, using host names only and no protocol, path, trailing period, or wildcard:
    - `dropbox.com`
    - `drive.google.com`

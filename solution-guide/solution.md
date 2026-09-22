@@ -82,7 +82,7 @@ Get-SPOTenant | Select-Object EnableAIPIntegration
 Connect-MgGraph -Scopes 'Directory.ReadWrite.All','Directory.AccessAsUser.All'
 Get-MgDirectorySetting | Where-Object DisplayName -eq 'Group.Unified' |
   Select-Object DisplayName,Values
-# Expected: EnableMIPSensitivityLabels = True
+# Expected: EnableMIPLabels = True
 ```
 
 Use the current Purview portal to inspect label details, publication, auto-labeling, and any label-conditioned DLP locations. Do not treat a missing banner as audit proof. Common failures include wrong SharePoint admin tenant, missing directory setting, protecting `Zava Internal`, omitting groups/sites from `Zava Highly Confidential`, selecting Teams, or storing a Temporary Access Pass in a script.

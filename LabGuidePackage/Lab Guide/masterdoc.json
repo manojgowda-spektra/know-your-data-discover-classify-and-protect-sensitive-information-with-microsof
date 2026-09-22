@@ -2,26 +2,26 @@
   {
     "Name": "Know Your Data - Discover, Classify and Protect Sensitive Information with Microsoft Purview",
     "Language": "English",
-    "BaseURL": "https://raw.githubusercontent.com/manojgowda-spektra/know-your-data-discover-classify-and-protect-sensitive-information-with-microsof/main/LabGuidePackage/Lab%20Guide/Lab%20Guide/",
+    "BaseURL": "https://github.com/manojgowda-spektra/know-your-data-discover-classify-and-protect-sensitive-information-with-microsof",
     "Files": [
       {
-        "RawFilePath": "GettingStarted-V2.md",
+        "RawFilePath": "https://raw.githubusercontent.com/manojgowda-spektra/know-your-data-discover-classify-and-protect-sensitive-information-with-microsof/refs/heads/main/LabGuidePackage/Lab%20Guide/Lab%20Guide/GettingStarted-V2.md",
         "Order": 1
       },
       {
-        "RawFilePath": "Challenge-01-Discover-Sensitive-Data.md",
+        "RawFilePath": "https://raw.githubusercontent.com/manojgowda-spektra/know-your-data-discover-classify-and-protect-sensitive-information-with-microsof/refs/heads/main/LabGuidePackage/Lab%20Guide/Lab%20Guide/Challenge-01-Discover-Sensitive-Data.md",
         "Order": 2
       },
       {
-        "RawFilePath": "Challenge-02-Classify-With-Labels-And-Auto-Labeling.md",
+        "RawFilePath": "https://raw.githubusercontent.com/manojgowda-spektra/know-your-data-discover-classify-and-protect-sensitive-information-with-microsof/refs/heads/main/LabGuidePackage/Lab%20Guide/Lab%20Guide/Challenge-02-Classify-With-Labels-And-Auto-Labeling.md",
         "Order": 3
       },
       {
-        "RawFilePath": "Challenge-03-Endpoint-Data-Loss-Prevention.md",
+        "RawFilePath": "https://raw.githubusercontent.com/manojgowda-spektra/know-your-data-discover-classify-and-protect-sensitive-information-with-microsof/refs/heads/main/LabGuidePackage/Lab%20Guide/Lab%20Guide/Challenge-03-Endpoint-Data-Loss-Prevention.md",
         "Order": 4
       },
       {
-        "RawFilePath": "Challenge-04-Insider-Risk-For-Departing-Users.md",
+        "RawFilePath": "https://raw.githubusercontent.com/manojgowda-spektra/know-your-data-discover-classify-and-protect-sensitive-information-with-microsof/refs/heads/main/LabGuidePackage/Lab%20Guide/Lab%20Guide/Challenge-04-Insider-Risk-For-Departing-Users.md",
         "Order": 5
       }
     ]

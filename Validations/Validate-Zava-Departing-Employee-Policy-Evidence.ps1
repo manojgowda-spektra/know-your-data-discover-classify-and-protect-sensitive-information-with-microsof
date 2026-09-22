@@ -96,7 +96,7 @@ do {
                 Status = 'Succeeded'
                 Message = $lastDetail
             } | ConvertTo-Json
-            Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+            Push-OutputBinding -Clobber -Name Response -Value ([HttpResponseContext]@{
                 StatusCode = [HttpStatusCode]::OK
                 Body = $message
             })
@@ -106,7 +106,7 @@ do {
                 Status = 'Failed'
                 Message = $lastDetail
             } | ConvertTo-Json
-            Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+            Push-OutputBinding -Clobber -Name Response -Value ([HttpResponseContext]@{
                 StatusCode = [HttpStatusCode]::OK
                 Body = $message
             })
@@ -119,7 +119,7 @@ do {
             Status = 'Failed'
             Message = "Error during the Azure-only check of seven canonical Challenge 4 evidence tags and preserved deployment tags. Attempt $count of 3. Error: $lastDetail"
         } | ConvertTo-Json
-        Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+        Push-OutputBinding -Clobber -Name Response -Value ([HttpResponseContext]@{
             StatusCode = [HttpStatusCode]::OK
             Body = $message
         })
@@ -132,7 +132,7 @@ if (-not $found) {
         Status = 'Failed'
         Message = "The seven canonical Challenge 4 evidence tags and preserved LabCode/DeploymentID deployment tags did not pass Azure VM-tag validation for DeploymentID '$DID' in subscription '$sub' after 3 attempts. No Microsoft 365 tenant state was queried. Last detail: $lastDetail"
     } | ConvertTo-Json
-    Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+    Push-OutputBinding -Clobber -Name Response -Value ([HttpResponseContext]@{
         StatusCode = [HttpStatusCode]::OK
         Body = $message
     })

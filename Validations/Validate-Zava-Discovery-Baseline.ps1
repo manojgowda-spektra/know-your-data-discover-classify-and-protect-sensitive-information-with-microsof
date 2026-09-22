@@ -222,11 +222,11 @@ do {
         } else {
             $message = @{
                 Status  = 'Failed'
-                Message = "Validation failed for organization '$organization' and $scope: $($failures -join ' ')"
+                Message = "Validation failed for organization '$organization' and ${scope}: $($failures -join ' ')"
             } | ConvertTo-Json
         }
 
-        Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+        Push-OutputBinding -Clobber -Name Response -Value ([HttpResponseContext]@{
             StatusCode = [HttpStatusCode]::OK
             Body       = $message
         })
@@ -240,7 +240,7 @@ do {
             Status  = 'Failed'
             Message = "Error during Security & Compliance check. Attempt $count of 3. Error: $($_.Exception.Message)"
         } | ConvertTo-Json
-        Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+        Push-OutputBinding -Clobber -Name Response -Value ([HttpResponseContext]@{
             StatusCode = [HttpStatusCode]::OK
             Body       = $message
         })
@@ -257,7 +257,7 @@ if (-not $found) {
         Status  = 'Failed'
         Message = "Policy 'Zava Discovery Baseline' and rule 'Zava Discovery Sensitive Data Rule' did not meet the required immediate configuration state after 3 attempts for $scope."
     } | ConvertTo-Json
-    Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+    Push-OutputBinding -Clobber -Name Response -Value ([HttpResponseContext]@{
         StatusCode = [HttpStatusCode]::OK
         Body       = $message
     })

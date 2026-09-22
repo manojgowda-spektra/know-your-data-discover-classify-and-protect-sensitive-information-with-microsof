@@ -54,7 +54,7 @@ In this task, you will use Exchange Online PowerShell to prove that unified audi
 
 > [!Important] Run `Get-AdminAuditLogConfig` in the Exchange Online session, not the Security & Compliance session. Microsoft documents that the same property can incorrectly appear as `False` in Security & Compliance PowerShell.
 
-> [!Important] Do not continue unless the positive assertion prints `True`. If the setting remains false after 60 minutes, contact the lab operator.
+> [!Important] Do not continue unless the positive assertion prints `True`. If it prints `False`, contact the lab operator immediately and continue with Task 2 while they resolve it. Do not wait idle: auditing must be `True` before Task 5, not before Task 2.
 
 ## Task 2: Enable labeling for SharePoint and OneDrive
 
