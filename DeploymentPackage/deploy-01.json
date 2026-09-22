@@ -22,7 +22,7 @@
     }
   },
   "variables": {
-    "scripturl": "https://experienceazure.blob.core.windows.net/templates/knowyourdata-smb/psscript-01.ps1",
+    "scripturl": "https://raw.githubusercontent.com/manojgowda-spektra/know-your-data-discover-classify-and-protect-sensitive-information-with-microsof/refs/heads/main/DeploymentPackage/psscript-01.ps1",
     "LabVMName": "[concat('labvm-', parameters('DeploymentID'))]",
     "computerName": "[concat('zava-', take(parameters('DeploymentID'), 10))]",
     "vnetName": "[concat('vnet-', parameters('DeploymentID'))]",
