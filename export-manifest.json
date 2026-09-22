@@ -1,0 +1,155 @@
+{
+  "packageId": "3ca31870-7e10-4841-bbf2-0f40fcfc287e",
+  "slug": "know-your-data-discover-classify-and-protect-sensitive-information-with-microsoft-purview-6zjX8",
+  "title": "Know Your Data - Discover, Classify and Protect Sensitive Information with Microsoft Purview",
+  "version": 1,
+  "exportedAt": "2026-09-22T14:16:33.088Z",
+  "exportTarget": "github_new_repo",
+  "force": false,
+  "deliverableConfig": {
+    "arm": {
+      "stages": 1,
+      "enabled": true
+    },
+    "cse": {
+      "enabled": true
+    },
+    "rbac": {
+      "enabled": true
+    },
+    "policy": {
+      "enabled": true
+    },
+    "readme": {
+      "enabled": true
+    },
+    "labGuide": {
+      "enabled": true,
+      "exercises": 4
+    },
+    "solution": {
+      "enabled": true
+    },
+    "questions": {
+      "count": 0,
+      "enabled": false
+    },
+    "specSheet": {
+      "enabled": true
+    },
+    "validations": {
+      "count": 4,
+      "enabled": true
+    }
+  },
+  "artifacts": [
+    {
+      "path": "DeploymentPackage/deploy-01.json",
+      "kind": "arm",
+      "lintStatus": "passed"
+    },
+    {
+      "path": "DeploymentPackage/deploy-01.parameters.json",
+      "kind": "arm_params",
+      "lintStatus": "passed"
+    },
+    {
+      "path": "DeploymentPackage/psscript-01.ps1",
+      "kind": "psscript",
+      "lintStatus": "passed"
+    },
+    {
+      "path": "LabGuidePackage/Lab Guide/Lab Guide/Challenge-01-Discover-Sensitive-Data.md",
+      "kind": "exercise_md",
+      "lintStatus": "passed"
+    },
+    {
+      "path": "LabGuidePackage/Lab Guide/Lab Guide/Challenge-02-Classify-With-Labels-And-Auto-Labeling.md",
+      "kind": "exercise_md",
+      "lintStatus": "passed"
+    },
+    {
+      "path": "LabGuidePackage/Lab Guide/Lab Guide/Challenge-03-Endpoint-Data-Loss-Prevention.md",
+      "kind": "exercise_md",
+      "lintStatus": "passed"
+    },
+    {
+      "path": "LabGuidePackage/Lab Guide/Lab Guide/Challenge-04-Insider-Risk-For-Departing-Users.md",
+      "kind": "exercise_md",
+      "lintStatus": "passed"
+    },
+    {
+      "path": "LabGuidePackage/Lab Guide/Lab Guide/GettingStarted-V2.md",
+      "kind": "getting_started",
+      "lintStatus": "passed"
+    },
+    {
+      "path": "LabGuidePackage/Lab Guide/Lab Guide/media/zava-purview-architecture.svg",
+      "kind": "media",
+      "lintStatus": "passed"
+    },
+    {
+      "path": "permissions/CustomARMPolicy/azure-policy.json",
+      "kind": "policy_json",
+      "lintStatus": "passed"
+    },
+    {
+      "path": "permissions/CustomRBAC/custom-rbac-role.json",
+      "kind": "rbac_json",
+      "lintStatus": "passed"
+    },
+    {
+      "path": "README.md",
+      "kind": "readme_md",
+      "lintStatus": "passed"
+    },
+    {
+      "path": "solution-guide/solution.md",
+      "kind": "solution_md",
+      "lintStatus": "passed"
+    },
+    {
+      "path": "Spec.md",
+      "kind": "spec_md",
+      "lintStatus": "passed"
+    },
+    {
+      "path": "Validations/Validate-Zava-Departing-Employee-Policy-Evidence.ps1",
+      "kind": "validation_ps1",
+      "lintStatus": "warn"
+    },
+    {
+      "path": "Validations/Validate-Zava-Discovery-Baseline.ps1",
+      "kind": "validation_ps1",
+      "lintStatus": "warn"
+    },
+    {
+      "path": "Validations/Validate-Zava-Endpoint-DLP.ps1",
+      "kind": "validation_ps1",
+      "lintStatus": "warn"
+    },
+    {
+      "path": "Validations/Validate-Zava-Information-Protection.ps1",
+      "kind": "validation_ps1",
+      "lintStatus": "warn"
+    },
+    {
+      "path": "LabGuidePackage/Lab Guide/masterdoc.json",
+      "kind": "masterdoc",
+      "lintStatus": null
+    },
+    {
+      "path": "template-config.json",
+      "kind": "template_config",
+      "lintStatus": null
+    }
+  ],
+  "errors": [],
+  "coherence": [],
+  "runnability": {
+    "issues": [],
+    "blocking": 0,
+    "warning": 0,
+    "info": 0
+  }
+}
