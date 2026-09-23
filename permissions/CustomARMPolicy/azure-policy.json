@@ -12,15 +12,15 @@
               "allOf": [
                 {
                   "field": "Microsoft.Compute/virtualMachines/storageProfile.imageReference.publisher",
-                  "equals": "MicrosoftWindowsDesktop"
+                  "equals": "Spektra"
                 },
                 {
                   "field": "Microsoft.Compute/virtualMachines/storageProfile.imageReference.offer",
-                  "equals": "Windows-11"
+                  "equals": "cloudlabs-windows-jumpvm"
                 },
                 {
                   "field": "Microsoft.Compute/virtualMachines/storageProfile.imageReference.sku",
-                  "equals": "win11-24h2-ent"
+                  "equals": "win2019"
                 }
               ]
             }
@@ -31,7 +31,8 @@
               "Standard_B2s",
               "Standard_B2ms",
               "Standard_D2as_v5",
-              "Standard_D2s_v5"
+              "Standard_D2s_v5",
+              "Standard_D2s_v3"
             ]
           },
           {

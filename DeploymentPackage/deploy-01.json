@@ -172,20 +172,17 @@
       "name": "[variables('LabVMName')]",
       "location": "[resourceGroup().location]",
       "tags": "[variables('tags')]",
+      "plan": {
+        "name": "win2019",
+        "publisher": "spektra",
+        "product": "cloudlabs-windows-jumpvm"
+      },
       "dependsOn": [
         "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
       ],
       "properties": {
-        "licenseType": "Windows_Client",
         "hardwareProfile": {
-          "vmSize": "Standard_D2as_v5"
-        },
-        "securityProfile": {
-          "securityType": "TrustedLaunch",
-          "uefiSettings": {
-            "secureBootEnabled": true,
-            "vTpmEnabled": true
-          }
+          "vmSize": "Standard_D2s_v3"
         },
         "osProfile": {
           "computerName": "[variables('computerName')]",
@@ -199,9 +196,9 @@
         },
         "storageProfile": {
           "imageReference": {
-            "publisher": "MicrosoftWindowsDesktop",
-            "offer": "Windows-11",
-            "sku": "win11-24h2-ent",
+            "publisher": "Spektra",
+            "offer": "cloudlabs-windows-jumpvm",
+            "sku": "win2019",
             "version": "latest"
           },
           "osDisk": {

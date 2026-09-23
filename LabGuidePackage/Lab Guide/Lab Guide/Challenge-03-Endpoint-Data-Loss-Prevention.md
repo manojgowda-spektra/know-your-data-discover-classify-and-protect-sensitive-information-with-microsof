@@ -4,7 +4,7 @@
 
 ## Scenario
 
-Zava needs enforceable controls on its managed Windows 11 endpoint. In this challenge, you will confirm that the lab operator's pre-onboarding work is healthy, then protect sensitive identity and payment data from removable-media transfer, unsanctioned cloud upload, and sharing with generative-AI websites. You will work in CloudLabs deployment **Zava-<inject key="DeploymentID" enableCopy="false"/>**.
+Zava needs enforceable controls on its managed Windows endpoint. In this challenge, you will confirm that the lab operator's pre-onboarding work is healthy, then protect sensitive identity and payment data from removable-media transfer, unsanctioned cloud upload, and sharing with generative-AI websites. You will work in CloudLabs deployment **Zava-<inject key="DeploymentID" enableCopy="false"/>**.
 
 ## Overview
 
@@ -23,7 +23,7 @@ You will create three Microsoft Purview Data Loss Prevention policies scoped onl
 
 In this task, you will positively confirm that the operator-prepared VM can receive and enforce Endpoint DLP policy. This is a prerequisite check, not an onboarding task.
 
-1. On the Windows 11 lab VM, open Microsoft Edge and browse to <https://purview.microsoft.com>.
+1. On the Windows lab VM, open Microsoft Edge and browse to <https://purview.microsoft.com>.
 2. If prompted, sign in with the lab identity:
    - Username: <inject key="AzureAdUserEmail"></inject>
    - Temporary Access Pass: <inject key="AzureAdUserPassword"></inject>

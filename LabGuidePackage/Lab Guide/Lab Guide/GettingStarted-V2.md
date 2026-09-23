@@ -7,14 +7,14 @@
 After completing this introduction, you will be able to:
 
 - Confirm that your assigned account has the Microsoft 365 E5 license required by the lab.
-- Identify the Microsoft Purview, Microsoft 365, and Windows 11 components used in the solution.
-- Access the dedicated Windows 11 lab VM and use the CloudLabs interface.
+- Identify the Microsoft Purview, Microsoft 365, and Windows components used in the solution.
+- Access the dedicated Windows lab VM and use the CloudLabs interface.
 - Sign in to the Microsoft Purview portal with the provided learner identity.
 - Recognize which lab assets you must create and which endpoint prerequisites the lab operator has already completed.
 
 ## Prerequisites
 
-1. From the Windows 11 lab VM, open Microsoft Edge and browse to <https://portal.office.com/account/#subscriptions>.
+1. From the Windows lab VM, open Microsoft Edge and browse to <https://portal.office.com/account/#subscriptions>.
 2. Sign in when prompted with the assigned lab account:
    - **Username:** <inject key="AzureAdUserEmail"></inject>
    - **Temporary Access Pass:** <inject key="AzureAdUserPassword"></inject>
@@ -23,7 +23,7 @@ After completing this introduction, you will be able to:
 > [!IMPORTANT]
 > If **Microsoft 365 E5** is absent, stop immediately and contact the lab operator by using the support details later on this page. Do not continue: missing licensing can produce misleading symptoms in Microsoft Purview.
 
-4. Confirm that you can use the dedicated Windows 11 VM and Microsoft Edge. Edge is the required browser for validation and endpoint testing. Chrome and Firefox can be used for supported endpoint actions only when the Microsoft Purview extension is installed.
+4. Confirm that you can use the dedicated Windows lab VM and Microsoft Edge. Edge is the required browser for validation and endpoint testing. Chrome and Firefox can be used for supported endpoint actions only when the Microsoft Purview extension is installed.
 5. Keep the supplied Temporary Access Pass private. Use it only for interactive sign-in when requested. Never place it in a script, file, log, command history, or noninteractive credential object.
 6. Be aware that the operator prepared the hot instance at least 24 hours before delivery. The operator assigned Microsoft 365 E5, completed Microsoft Defender for Endpoint tenant provisioning, assigned Global Administrator and the required Microsoft Purview role groups, and onboarded the VM to Microsoft Purview.
 7. The required Microsoft Purview role-group assignments are `Information Protection`, `Content Explorer List Viewer`, `Content Explorer Content Viewer`, `Insider Risk Management`, and `Compliance Administrator`.
@@ -33,19 +33,19 @@ After completing this introduction, you will be able to:
 
 ## Architecture
 
-The lab combines a Microsoft 365 E5 tenant with a dedicated Azure-hosted Windows 11 endpoint. You work interactively from that endpoint with Microsoft Purview, Microsoft Entra ID, SharePoint Online, OneDrive, Security & Compliance PowerShell, and Microsoft Graph PowerShell. Azure deployment controls apply only to the VM and its Azure resource boundary; they do not provision or govern Microsoft 365 licenses, Microsoft Purview role groups, Defender tenant readiness, or Purview policies.
+The lab combines a Microsoft 365 E5 tenant with a dedicated Azure-hosted Windows endpoint. You work interactively from that endpoint with Microsoft Purview, Microsoft Entra ID, SharePoint Online, OneDrive, Security & Compliance PowerShell, and Microsoft Graph PowerShell. Azure deployment controls apply only to the VM and its Azure resource boundary; they do not provision or govern Microsoft 365 licenses, Microsoft Purview role groups, Defender tenant readiness, or Purview policies.
 
 The operator has already onboarded the endpoint. In Challenge 3, you verify its state in Microsoft Purview at **Settings** > **Device onboarding** > **Device report** and **Settings** > **Device onboarding** > **Devices**. Current Microsoft guidance identifies the device report as the view for onboarding, recent connectivity, policy-update readiness, and supported-feature readiness. The device list exposes **Configuration status** and **Policy Sync status**. If the assigned VM is unhealthy, stale, not onboarded, or not ready to receive policy updates, stop and contact the lab operator; do not attempt onboarding or remediation.
 
 ## Architecture diagram
 
-![Architecture of the Zava Microsoft Purview lab. CloudLabs provides access to a hot Windows 11 VM connected to Microsoft Entra ID and Microsoft Purview; Microsoft Purview integrates with Microsoft Defender for Endpoint, SharePoint Online, and OneDrive.](./media/zava-purview-architecture.svg)
+![Architecture of the Zava Microsoft Purview lab. CloudLabs provides access to a hot Windows lab VM connected to Microsoft Entra ID and Microsoft Purview; Microsoft Purview integrates with Microsoft Defender for Endpoint, SharePoint Online, and OneDrive.](./media/zava-purview-architecture.svg)
 
 ## Explanation of components
 
 | Component | Purpose in this lab |
 |---|---|
-| Windows 11 lab VM | Dedicated managed endpoint from which you perform administration, create synthetic evidence, and test Endpoint DLP controls. |
+| Windows lab VM | Dedicated managed endpoint from which you perform administration, create synthetic evidence, and test Endpoint DLP controls. |
 | Microsoft Edge | Required validation browser. It supports the tested endpoint actions natively. |
 | Microsoft Purview portal | Unified portal at <https://purview.microsoft.com> for Data Loss Prevention, Information Protection, device onboarding health, Activity explorer, and Insider Risk Management. |
 | Microsoft Entra ID | Supplies the learner identity and the account-deleted triggering event used by the departing-user insider-risk policy. |
@@ -53,7 +53,7 @@ The operator has already onboarded the endpoint. In Challenge 3, you verify its 
 | Security & Compliance PowerShell | Supports positive verification of audit and Microsoft Purview configuration where supported. |
 | Microsoft Graph PowerShell | Supports verification and configuration of the directory setting for sensitivity labels on Microsoft 365 groups and sites. |
 | Microsoft Defender for Endpoint | Provides the tenant and endpoint foundation shared with Microsoft Purview device onboarding. Provisioning is an operator prerequisite. |
-| Azure resource boundary | Contains the Windows 11 VM, network interface, virtual network, network security group, access path, managed disk, and diagnostics. Azure RBAC and Azure Policy apply only to these Azure resources. |
+| Azure resource boundary | Contains the Windows lab VM, network interface, virtual network, network security group, access path, managed disk, and diagnostics. Azure RBAC and Azure Policy apply only to these Azure resources. |
 
 ## Getting started with the lab
 
@@ -82,12 +82,12 @@ Simulation results, Content Explorer counts, label propagation, Activity explore
 1. In the CloudLabs lab page, locate the connection controls for your provisioned virtual machine.
 2. Note the deployment identifier shown for **Zava lab deployment <inject key="DeploymentID" enableCopy="false"/>**. Use this value whenever the lab interface asks you to identify your deployment.
 3. Start the VM if its status is stopped, and wait until the status reports that it is running.
-4. Select the available connection option and follow the CloudLabs prompts to open the Windows 11 desktop.
+4. Select the available connection option and follow the CloudLabs prompts to open the Windows desktop.
 5. Keep the CloudLabs browser tab open so you can return to the guide, VM controls, support, and validation actions.
 
 ## Virtual machine and lab guide
 
-1. Use the Windows 11 VM for every portal, PowerShell, document, and endpoint action in the lab.
+1. Use the Windows lab VM for every portal, PowerShell, document, and endpoint action in the lab.
 2. Keep Microsoft Edge open beside the lab guide. Do not move tenant secrets into local text files or terminal transcripts.
 3. Complete challenge steps in order. Later configurations depend on objects and evidence that you create earlier.
 4. Use only the exact names printed in the guide. Do not add suffixes, choose alternatives, or rename objects.
@@ -125,7 +125,7 @@ Simulation results, Content Explorer counts, label propagation, Activity explore
 
 ## Getting started with the portal
 
-1. On the Windows 11 VM, open Microsoft Edge and go to <https://purview.microsoft.com>.
+1. On the Windows lab VM, open Microsoft Edge and go to <https://purview.microsoft.com>.
 2. Sign in with <inject key="AzureAdUserEmail"></inject> and the provided Temporary Access Pass when prompted.
 3. If the first-run welcome dialog appears, review the terms, select **Get started**, and dismiss or follow the teaching prompts.
 4. Confirm that the home page displays the Microsoft Purview solutions available through your subscription and permissions. Select **View all solutions** when a required solution card is not on the home page.

@@ -1,6 +1,6 @@
 # Know Your Data - Discover, Classify and Protect Sensitive Information with Microsoft Purview
 
-This CloudLabs package delivers a six-hour, intermediate Azure challenge lab in which a learner helps Zava discover regulated data, classify it with sensitivity labels, prevent endpoint exfiltration, and configure insider-risk detection for departing users. The environment combines a dedicated Azure Windows 11 VM with a preassigned Microsoft 365 E5 tenant and Microsoft Purview services.
+This CloudLabs package delivers a six-hour, intermediate Azure challenge lab in which a learner helps Zava discover regulated data, classify it with sensitivity labels, prevent endpoint exfiltration, and configure insider-risk detection for departing users. The environment combines a dedicated Azure Windows lab VM with a preassigned Microsoft 365 E5 tenant and Microsoft Purview services.
 
 ## Package contents
 
@@ -36,11 +36,11 @@ The remaining scheduled time covers environment orientation, prerequisite verifi
 
 ## Azure deployment boundary
 
-A single ARM stage deploys the Windows 11 lab endpoint and its Azure boundary: virtual machine, network interface, virtual network, network security group, public IP, `StandardSSD_LRS` managed OS disk, boot diagnostics, Custom Script Extension, and the existing enabled `Microsoft.DevTestLab/schedules` VM shutdown schedule. Preserve that schedule and its target, time, time zone, and notification settings; do not create a second schedule. The Custom Script Extension downloads common bootstrap assets from `experienceazure.blob.core.windows.net/templates/cloudlabs-common/`, installs current PowerShell prerequisites and browser tooling, and prepares synthetic-data helper files without writing tenant secrets to files or logs.
+A single ARM stage deploys the Windows lab endpoint and its Azure boundary: virtual machine, network interface, virtual network, network security group, public IP, `StandardSSD_LRS` managed OS disk, boot diagnostics, Custom Script Extension, and the existing enabled `Microsoft.DevTestLab/schedules` VM shutdown schedule. Preserve that schedule and its target, time, time zone, and notification settings; do not create a second schedule. The Custom Script Extension downloads common bootstrap assets from `experienceazure.blob.core.windows.net/templates/cloudlabs-common/`, installs current PowerShell prerequisites and browser tooling, and prepares synthetic-data helper files without writing tenant secrets to files or logs.
 
 Use separate Azure role assignments. Assign the deployment identity the packaged deployment-capable custom role at the deployment scope required to create and manage the ARM resources. Assign the learner the tag-capable role at the scope of the single lab VM only; that VM-scoped assignment supports the seven Challenge 4 evidence tags without granting deployment-wide resource management. Neither assignment grants tenant-wide Microsoft 365 authority, and neither permits Azure role-assignment write or delete operations.
 
-Azure Policy is limited to the Azure resource boundary. It enforces the approved Windows 11 image/SKU contract, managed disks, and required deployment tags `LabCode` and `DeploymentID`; it does not govern Microsoft 365 or Microsoft Purview configuration. `Standard_D2as_v5` with `StandardSSD_LRS` is the deployed size. The original `Standard_B2s` and its documented fallback `Standard_B2ms` both failed ARM preflight on 2026-09-23 with `SkuNotAvailable ... Capacity Restrictions` — B2s in East US and B2ms in West US. Burstable B-series capacity is chronically constrained in US regions, so the lab moved to a D-series size at effectively the same rate (~$0.086/hr against ~$0.083/hr). The Azure Policy permits `Standard_B2s`, `Standard_B2ms`, `Standard_D2as_v5` and `Standard_D2s_v5`, so a size change within that set needs no policy edit.
+Azure Policy is limited to the Azure resource boundary. It enforces the approved Windows image/SKU contract, managed disks, and required deployment tags `LabCode` and `DeploymentID`; it does not govern Microsoft 365 or Microsoft Purview configuration. `Standard_D2as_v5` with `StandardSSD_LRS` is the deployed size. The original `Standard_B2s` and its documented fallback `Standard_B2ms` both failed ARM preflight on 2026-09-23 with `SkuNotAvailable ... Capacity Restrictions` — B2s in East US and B2ms in West US. Burstable B-series capacity is chronically constrained in US regions, so the lab moved to a D-series size at effectively the same rate (~$0.086/hr against ~$0.083/hr). The Azure Policy permits `Standard_B2s`, `Standard_B2ms`, `Standard_D2as_v5` and `Standard_D2s_v5`, so a size change within that set needs no policy edit.
 
 ARM, CSE, Azure RBAC, and Azure Policy do not assign Microsoft 365 licenses or Purview roles, provision the Defender for Endpoint tenant, or onboard the device to Microsoft Purview. Those operations are operator-managed hot-instance prerequisites.
 
@@ -49,7 +49,7 @@ ARM, CSE, Azure RBAC, and Azure Policy do not assign Microsoft 365 licenses or P
 The Azure resources can remain provisioned for at least 24 hours while the VM is deallocated outside explicit onboarding, synchronization, telemetry, and release-verification windows. Complete and verify all items before releasing the lab:
 
 1. Keep the hot-instance resources provisioned for at least 24 hours before learner access. Do not interpret this as a requirement to keep the VM running continuously.
-2. Confirm the guest operating system is Windows 11 and preserve the existing enabled VM shutdown schedule without changing its established settings.
+2. Confirm the guest operating system is Windows and preserve the existing enabled VM shutdown schedule without changing its established settings.
 3. Assign Microsoft 365 E5 to the learner identity.
 4. Assign Global Administrator and the following Microsoft Purview role groups, allowing time for propagation:
    - `Information Protection`
