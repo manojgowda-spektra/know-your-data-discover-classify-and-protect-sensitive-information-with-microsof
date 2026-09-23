@@ -246,7 +246,6 @@
         "type": "CustomScriptExtension",
         "typeHandlerVersion": "1.10",
         "autoUpgradeMinorVersion": true,
-        "enableAutomaticUpgrade": true,
         "settings": {
           "fileUris": [
             "[variables('scripturl')]"
