@@ -5,7 +5,7 @@ Lab Overview
 • Duration: 360 minutes
 • Challenges: 4 (Discover sensitive data, Classify with labels and auto-labeling, Endpoint Data Loss Prevention, Insider risk detection for departing users)
 • Validations: 4
-• Deployed services: Windows 11 Virtual Machine (Standard_B2ms), Network Interface, Virtual Network, Network Security Group, Public IP, StandardSSD_LRS Managed OS Disk, Boot Diagnostics, Custom Script Extension, Existing VM Auto-shutdown Schedule
+• Deployed services: Windows 11 Virtual Machine (Standard_D2as_v5), Network Interface, Virtual Network, Network Security Group, Public IP, StandardSSD_LRS Managed OS Disk, Boot Diagnostics, Custom Script Extension, Existing VM Auto-shutdown Schedule
 • Scenario: Zava must identify regulated data, classify it consistently, prevent endpoint exfiltration, and detect risk from departing users. The learner uses a Microsoft 365 E5 tenant and a dedicated Windows 11 lab VM to create Microsoft Purview discovery, sensitivity-labeling, Endpoint DLP, and insider-risk controls. Challenge 4 is cross-checked in the portal and recorded as seven exact tags merged onto the single VM resolved by `DeploymentID`; existing deployment tags including `LabCode` remain unchanged, and no local JSON evidence is used.
 
 This Package Includes
