@@ -178,7 +178,7 @@
       "properties": {
         "licenseType": "Windows_Client",
         "hardwareProfile": {
-          "vmSize": "Standard_B2s"
+          "vmSize": "Standard_B2ms"
         },
         "securityProfile": {
           "securityType": "TrustedLaunch",

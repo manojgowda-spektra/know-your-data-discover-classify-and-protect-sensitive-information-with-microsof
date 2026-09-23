@@ -40,7 +40,7 @@ A single ARM stage deploys the Windows 11 lab endpoint and its Azure boundary: v
 
 Use separate Azure role assignments. Assign the deployment identity the packaged deployment-capable custom role at the deployment scope required to create and manage the ARM resources. Assign the learner the tag-capable role at the scope of the single lab VM only; that VM-scoped assignment supports the seven Challenge 4 evidence tags without granting deployment-wide resource management. Neither assignment grants tenant-wide Microsoft 365 authority, and neither permits Azure role-assignment write or delete operations.
 
-Azure Policy is limited to the Azure resource boundary. It enforces the approved Windows 11 image/SKU contract, managed disks, and required deployment tags `LabCode` and `DeploymentID`; it does not govern Microsoft 365 or Microsoft Purview configuration. `Standard_B2s` with `StandardSSD_LRS` remains the cost-conscious baseline pending a representative six-hour pilot. If that pilot shows sustained CPU, memory, or browser/tooling pressure, use `Standard_B2ms` as the documented fallback while retaining `StandardSSD_LRS`.
+Azure Policy is limited to the Azure resource boundary. It enforces the approved Windows 11 image/SKU contract, managed disks, and required deployment tags `LabCode` and `DeploymentID`; it does not govern Microsoft 365 or Microsoft Purview configuration. `Standard_B2ms` with `StandardSSD_LRS` is the deployed size. `Standard_B2s` was the original baseline but is subject to capacity restrictions in East US — a deployment on 2026-09-23 failed preflight with `SkuNotAvailable ... Capacity Restrictions: Standard_B2s`. Both sizes remain permitted by the Azure Policy, so reverting is a one-value change if capacity returns.
 
 ARM, CSE, Azure RBAC, and Azure Policy do not assign Microsoft 365 licenses or Purview roles, provision the Defender for Endpoint tenant, or onboard the device to Microsoft Purview. Those operations are operator-managed hot-instance prerequisites.
 
@@ -71,7 +71,7 @@ Use this start/deallocate checklist for every explicit onboarding, synchronizati
 2. Perform only the scheduled onboarding, policy-sync, connectivity, telemetry, or release checks.
 3. Before release, confirm Microsoft Purview reports successful onboarding, current connectivity, healthy status, and readiness for Endpoint DLP policy updates.
 4. When the window is complete and no learner session or required operation is active, deallocate the VM and verify Azure reports `PowerState/deallocated`.
-5. Repeat the start checks before the learner window. Leave the preserved auto-shutdown schedule enabled as a safeguard; it does not replace deliberate deallocation after operator windows.
+5. Repeat the start checks before the learner window. The auto-shutdown schedule is deployed **disabled**. This lab is pre-deployed as a hot instance at least 24 hours before delivery so Defender for Endpoint tenant provisioning and device onboarding can complete; a daily shutdown during that window stops the VM while nobody is connected and silently breaks the warm-up. Deallocate deliberately after each operator window instead, and re-enable the schedule only if this lab is ever delivered without a pre-deployment window.
 
 The learner verifies health but does not onboard or remediate the device. If licensing, role propagation, onboarding, connectivity, or health checks fail, the learner stops and contacts the lab operator.
 
