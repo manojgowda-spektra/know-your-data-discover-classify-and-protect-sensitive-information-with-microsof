@@ -16,7 +16,7 @@ $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
 $transcriptPath = 'C:\WindowsAzure\Logs\CloudLabsCustomScriptExtension.txt'
 New-Item -ItemType Directory -Path (Split-Path -Path $transcriptPath -Parent) -Force | Out-Null
-Start-Transcript -Path $transcriptPath -Append -Force -UseMinimalHeader
+Start-Transcript -Path $transcriptPath -Append -Force
 
 try {
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
