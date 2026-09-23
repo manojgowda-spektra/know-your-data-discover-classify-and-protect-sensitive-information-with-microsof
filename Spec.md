@@ -27,7 +27,7 @@ Challenge 4 Evidence and Validator Contract
 Operational Scope
 • Assign the deployment identity at the deployment scope required by ARM. Separately assign the learner's tag-capable role at the single VM scope.
 • Resources can remain provisioned for at least 24 hours while the VM is deallocated outside explicit onboarding, synchronization, telemetry, and release windows.
-• For each such window: start the VM and verify guest reachability; perform onboarding, sync, telemetry, or release checks; confirm Purview health and current connectivity; deallocate when complete and verify `PowerState/deallocated`; start and recheck before learner release. The `Microsoft.DevTestLab/schedules` auto-shutdown resource is deployed with status `Disabled`, so it cannot stop the VM during the pre-deployment warm-up window.
+• For each such window: start the VM and verify guest reachability; confirm Purview health and current connectivity; deallocate when complete and verify `PowerState/deallocated`; start and recheck before learner release. The `Microsoft.DevTestLab/schedules` auto-shutdown resource is deployed with status `Disabled`. No device onboarding is performed: Challenge 3 is graded on Endpoint DLP configuration, not on enforcement, so no Defender for Endpoint provisioning window is required.
 • Microsoft Learn alignment covers certificate-based app-only Exchange/Security & Compliance PowerShell, `Update-AzTag` merge semantics, `Microsoft.DevTestLab/schedules`, and Azure Policy's built-in managed-disk definitions.
 
 Lab Guide Preview

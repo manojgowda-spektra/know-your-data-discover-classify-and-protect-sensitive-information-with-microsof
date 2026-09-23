@@ -35,7 +35,7 @@ After completing this introduction, you will be able to:
 
 The lab combines a Microsoft 365 E5 tenant with a dedicated Azure-hosted Windows endpoint. You work interactively from that endpoint with Microsoft Purview, Microsoft Entra ID, SharePoint Online, OneDrive, Security & Compliance PowerShell, and Microsoft Graph PowerShell. Azure deployment controls apply only to the VM and its Azure resource boundary; they do not provision or govern Microsoft 365 licenses, Microsoft Purview role groups, Defender tenant readiness, or Purview policies.
 
-The operator has already onboarded the endpoint. In Challenge 3, you verify its state in Microsoft Purview at **Settings** > **Device onboarding** > **Device report** and **Settings** > **Device onboarding** > **Devices**. Current Microsoft guidance identifies the device report as the view for onboarding, recent connectivity, policy-update readiness, and supported-feature readiness. The device list exposes **Configuration status** and **Policy Sync status**. If the assigned VM is unhealthy, stale, not onboarded, or not ready to receive policy updates, stop and contact the lab operator; do not attempt onboarding or remediation.
+**No device is onboarded to Microsoft Purview in this lab tenant, and none is required.** Microsoft Purview Endpoint DLP enforces through the Microsoft Defender for Endpoint sensor on an onboarded device. Challenge 3 therefore builds three Endpoint DLP policies and is assessed on that configuration rather than on an observed block. In Challenge 3 you will confirm the empty device list at **Settings** > **Device onboarding** > **Devices** and record why it matters. Do not attempt to onboard a device; that is an operator responsibility and is out of scope.
 
 ## Architecture diagram
 
@@ -69,7 +69,7 @@ You will complete four challenges:
 The six-hour booking includes **255 minutes of active work** across Getting Started and the four challenges, plus this concrete **105-minute operating allowance**:
 
 - **30 minutes** for breaks.
-- **20 minutes** for operator checkpoints covering licensing, access, role propagation, and pre-onboarded device health.
+- **20 minutes** for operator checkpoints covering licensing, access, and role propagation.
 - **40 minutes** for policy synchronization allowance while you continue with work that does not depend on delayed results.
 - **15 minutes** for final configuration and evidence review.
 
@@ -134,7 +134,7 @@ Simulation results, Content Explorer counts, label propagation, Activity explore
 
 ## Support contact
 
-If licensing, access, role propagation, VM connectivity, or pre-onboarded device health prevents progress, stop and contact CloudLabs support:
+If licensing, access, role propagation, or VM connectivity prevents progress, stop and contact CloudLabs support:
 
 - Email: [cloudlabs-support@spektrasystems.com](mailto:cloudlabs-support@spektrasystems.com)
 - Support portal: <https://cloudlabs.ai/labs-support>

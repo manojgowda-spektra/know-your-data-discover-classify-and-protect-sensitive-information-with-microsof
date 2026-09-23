@@ -91,7 +91,7 @@ Use the current Purview portal to inspect label details, publication, auto-label
 
 ### Expected end state
 
-The operator’s pre-onboarded device record is healthy, recently connected, and ready for Endpoint DLP policy updates. If not, stop grading and repair the hot instance outside the learner path.
+The device list at Settings > Device onboarding > Devices is empty. That is the expected state: this lab tenant onboards no device, and Challenge 3 is graded on policy configuration only. A learner who reports an empty device list and explains the Defender for Endpoint sensor dependency has answered Task 1 correctly.
 
 These exact Devices-only policies and rules exist, each with a content condition matching either `Credit Card Number` or `U.S. Social Security Number`:
 
@@ -103,7 +103,7 @@ These exact Devices-only policies and rules exist, each with a content condition
 
 ### Rubric
 
-**Full credit:** healthy pre-onboarding check; exact three policies/rules; Devices-only scope; either-SIT conditions; correct block actions; exact custom domain group and domains; built-in `Generative AI Websites`; both generative-AI actions; Edge test and risk interpretation; successful `Validate-Zava-Endpoint-DLP`.
+**Full credit:** correct statement of the onboarded-device dependency and the empty device list; exact three policies/rules; Devices-only scope; either-SIT conditions; correct block actions; exact custom domain group and domains; built-in `Generative AI Websites`; both generative-AI actions; risk interpretation; successful `Validate-Zava-Endpoint-DLP`.
 
 **Partial credit:** configuration is exact but one physical removable-media test is unavailable and the operator confirms device readiness. Missing content conditions, wrong domain/group, non-Devices scope, or one missing generative-AI action is material. Do not deduct for delayed Activity explorer events.
 

@@ -29,7 +29,7 @@ All learner-facing guide filenames, headings, and prose use **Challenge** termin
 
 1. **Discover sensitive data (55 minutes):** Create synthetic documents and configure `Zava Discovery Baseline` with `Zava Discovery Sensitive Data Rule` in simulation mode for SharePoint and OneDrive only.
 2. **Classify with labels and auto-labeling (75 minutes):** Verify tenant prerequisites, create and publish `Zava Public`, `Zava Internal`, `Zava Confidential`, and `Zava Highly Confidential`, and simulate `Zava Auto-Label Policy` with `Zava High-Risk Identity Data Rule`.
-3. **Endpoint Data Loss Prevention (60 minutes):** Verify the healthy pre-onboarded endpoint and create Devices-only controls for removable storage, unsanctioned cloud storage, and the built-in `Generative AI Websites` domain group.
+3. **Endpoint Data Loss Prevention (60 minutes):** Establish the onboarded-device dependency, then create Devices-only controls for removable storage, unsanctioned cloud storage, and the built-in `Generative AI Websites` domain group. Assessed on configuration; this tenant has no onboarded device, so no block can be observed.
 4. **Insider risk detection for departing users (45 minutes):** Enable the four required indicators, configure `Zava Departing Employee Data Theft` from `Data theft by departing users` as a `Custom policy` with the `Microsoft Entra account deleted` trigger, confirm both content-priority pages, perform the guided portal cross-check, and record the seven exact evidence tags on the Azure VM resolved by `DeploymentID`.
 
 The remaining scheduled time covers environment orientation, prerequisite verification, policy propagation allowances, evidence review, and validation.

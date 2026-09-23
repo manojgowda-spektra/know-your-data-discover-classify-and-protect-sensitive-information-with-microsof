@@ -4,43 +4,39 @@
 
 ## Scenario
 
-Zava needs enforceable controls on its managed Windows endpoint. In this challenge, you will confirm that the lab operator's pre-onboarding work is healthy, then protect sensitive identity and payment data from removable-media transfer, unsanctioned cloud upload, and sharing with generative-AI websites. You will work in CloudLabs deployment **Zava-<inject key="DeploymentID" enableCopy="false"/>**.
+Zava is designing endpoint controls ahead of rolling out managed devices. In this challenge, you will establish why Endpoint DLP depends on an onboarded device, then build the three policies that will protect sensitive identity and payment data from removable-media transfer, unsanctioned cloud upload, and sharing with generative-AI websites once devices are onboarded. You will work in CloudLabs deployment **Zava-<inject key="DeploymentID" enableCopy="false"/>**.
 
 ## Overview
 
-You will create three Microsoft Purview Data Loss Prevention policies scoped only to **Devices**. Every rule will use a sensitive-information condition and an enforcing **Block** action. You will then use Microsoft Edge to attempt a controlled action with synthetic data and review any available endpoint evidence.
+You will create three Microsoft Purview Data Loss Prevention policies scoped only to **Devices**. Every rule will use a sensitive-information condition and an enforcing **Block** action. Because this tenant has no onboarded device, the policies are assessed on their configuration rather than on an observed block.
 
 ## Objectives
 
-- Task 1: Verify endpoint onboarding, connectivity, health, and readiness
+- Task 1: Confirm the endpoint enforcement dependency
 - Task 2: Block sensitive data copied to removable storage
 - Task 3: Define unsanctioned cloud destinations
 - Task 4: Block sensitive uploads to unsanctioned cloud storage
 - Task 5: Block sensitive sharing with generative-AI websites and interpret evidence
 - Task 6: Validate the immediate configuration
 
-## Task 1: Verify endpoint onboarding, connectivity, health, and readiness
+## Task 1: Confirm the endpoint enforcement dependency
 
-In this task, you will positively confirm that the operator-prepared VM can receive and enforce Endpoint DLP policy. This is a prerequisite check, not an onboarding task.
+In this task, you will establish what Endpoint DLP requires before it can enforce anything, and confirm the current state of this lab tenant. This is an observation task, not an onboarding task.
 
 1. On the Windows lab VM, open Microsoft Edge and browse to <https://purview.microsoft.com>.
 2. If prompted, sign in with the lab identity:
    - Username: <inject key="AzureAdUserEmail"></inject>
    - Temporary Access Pass: <inject key="AzureAdUserPassword"></inject>
-3. In the Microsoft Purview portal, open **Settings** > **Device onboarding** > **Devices**. Identify this VM by running `hostname` in Windows Terminal and matching the returned computer name to the device record.
-4. Open the device record and positively verify all of the following:
-   - The VM appears as an onboarded device and **Endpoint DLP status** is enabled.
-   - **Last seen** shows recent connectivity. For this challenge, require a timestamp within the past 24 hours.
-   - **Configuration status** is **Updated**. This means the health parameters are enabled, correctly configured, and sending the expected heartbeat to Microsoft Purview.
-   - If **Policy sync status** is present, it is **Updated**. Before any endpoint policy exists, **Not available** can be expected; it does not by itself prove a failed onboarding.
-5. Open **Settings** > **Device onboarding** > **Device report**. In **Device onboarding**, confirm that the VM is running Endpoint DLP without a configuration issue. In **Device readiness to receive policy updates**, confirm that the VM is not identified as at risk because it was offline in the past day, has an outdated Defender version, or has a configuration issue.
-6. In **Device readiness for feature**, confirm that the VM is ready for **Paste to supported browsers**, which is required later in this challenge.
+3. In the Microsoft Purview portal, open **Settings** > **Device onboarding** > **Devices**.
+4. Confirm that **no devices are listed**. This lab tenant has no onboarded device.
+5. Read the banner Microsoft displays on the endpoint settings pages. It states that cloud service, cloud storage, generative AI, and device indicators require onboarded devices.
+6. Record, in your own words, why the policies you are about to build cannot block anything in this environment. Microsoft Purview Endpoint DLP has no agent of its own; it enforces through the Microsoft Defender for Endpoint sensor on an onboarded device. With no onboarded device there is no sensor to carry the policy, so no activity can be intercepted.
 
 > [!IMPORTANT]
-> If the device is missing, Endpoint DLP is disabled, **Last seen** is older than 24 hours, **Configuration status** is not **Updated**, the device is shown as not ready to receive policy updates, or paste readiness is not healthy, **stop now and contact the lab operator**. Do not download an onboarding package, run onboarding commands, change Defender settings, or attempt remediation. Endpoint onboarding and health are operator responsibilities.
+> Do not download an onboarding package, run onboarding commands, or change Defender settings. Device onboarding is an operator responsibility and is deliberately out of scope for this challenge.
 
 > [!NOTE]
-> The device report refreshes approximately hourly. Its policy-readiness indicator identifies devices at risk of missing future updates; it does not assert that a particular update already failed.
+> This challenge is assessed on the configuration you build, not on observing a block. That is the same distinction a real deployment faces: the policy design is complete and correct long before the estate is fully onboarded, and a policy that is correctly configured will begin enforcing the moment a device is onboarded.
 
 ## Task 2: Block sensitive data copied to removable storage
 
@@ -108,16 +104,16 @@ In this task, you will use Microsoft's built-in, non-editable destination group 
 6. Turn on user notifications and policy tips. Save the rule, choose **Turn the policy on immediately**, and submit the policy.
 7. In Notepad, create `%USERPROFILE%\Documents\Zava-Endpoint-Sensitive-Data.txt`. Add clearly labeled synthetic payment and identity records using the non-live values that you already proved match `Credit Card Number` or `U.S. Social Security Number` in Challenge 01. Save and close the file so Endpoint DLP can classify it.
 8. Allow time for the newly enabled policies to synchronize. Keep the VM online. Return to **Settings** > **Device onboarding** > **Devices**, open the VM, and note **Last policy sync time** and **Policy sync status**. A new policy can take time to synchronize, and the devices list can take up to two hours to reflect the latest status.
-9. Use the operator-provided removable-storage test device or approved removable-media emulation to attempt to copy `Zava-Endpoint-Sensitive-Data.txt`. If the new policy has synchronized, confirm that the copy is blocked and observe the policy tip. Do not change the action to allow an override.
-10. In Microsoft Edge, use an operator-approved test destination represented by `Zava Unsanctioned Cloud Storage` or `Generative AI Websites` to attempt an upload of the file. Where a text prompt is available, also attempt to paste only the synthetic test text. Observe whether the action is blocked and whether a policy tip appears. Do not use Chrome or Firefox for this challenge; those browsers require the Microsoft Purview extension, while Edge supports these endpoint actions natively.
-11. Open **Data Loss Prevention** > **Activity explorer**. If events are available, filter by the VM, recent activity time, and the three Zava policy or rule names. Correlate each available event with its attempted activity and outcome.
+9. Reopen each of the three policies you created and confirm its configuration is complete: the policy name, the **Devices**-only location, the rule name, the sensitive-information condition, the **Block** action, and the policy tip. This configuration review is the deliverable for this challenge.
+10. Record which browser each control would apply to once a device is onboarded. Microsoft Edge supports these endpoint actions natively; Chrome and Firefox require the Microsoft Purview extension. This matters for rollout planning even though no block can occur here.
+11. Open **Data Loss Prevention** > **Activity explorer** and filter by the three Zava policy or rule names. Confirm that **no endpoint events are present**, and explain in one sentence why that is the expected and correct result in a tenant with no onboarded device. An empty Activity explorer here is evidence of the dependency, not evidence of a misconfigured policy.
 12. Record your interpretation in a local text note:
     - `Zava Block Removable Storage` reduces loss through portable media.
     - `Zava Block Unsanctioned Cloud Uploads` reduces exfiltration to `dropbox.com`, `drive.google.com`, and `box.com`.
     - `Zava Block Generative AI Sharing` reduces disclosure through file upload or paste to destinations in `Generative AI Websites`.
 
 > [!NOTE]
-> Policy synchronization, endpoint policy tips, classification responses, and Activity explorer telemetry can be delayed. The paste action can also show a brief classification delay before Edge completes policy evaluation. These observations are instructional evidence only and are not inputs to the graded validator. Do not weaken or recreate a policy merely because an event or tip has not appeared yet.
+> No endpoint policy tip, block, or Activity explorer event can appear in this tenant, because no device is onboarded to carry the policy. That is expected. The three policies are complete and correct as configured, and each will begin enforcing as soon as a device is onboarded. Do not weaken, recreate, or re-scope a policy because no event appeared.
 
 ## Task 6: Validate the immediate configuration
 
@@ -131,4 +127,4 @@ In this task, you will validate only the configuration state that can be checked
 
 ## Summary
 
-You verified the health of Zava's pre-onboarded Windows endpoint and created three enforcing Endpoint DLP policies. The policies use content inspection to block sensitive removable-media copies, uploads to Zava's exact unsanctioned domains, and uploads or paste actions to Microsoft's built-in generative-AI website group. You also distinguished immediate configuration validation from delayed endpoint and reporting evidence.
+You established why Endpoint DLP depends on an onboarded device and created three enforcing Endpoint DLP policies. The policies use content inspection to block sensitive removable-media copies, uploads to Zava's exact unsanctioned domains, and uploads or paste actions to Microsoft's built-in generative-AI website group. Each is complete and correct as configured and will begin enforcing as soon as a device is onboarded. You also distinguished a configuration deliverable from enforcement evidence that this tenant cannot produce.
