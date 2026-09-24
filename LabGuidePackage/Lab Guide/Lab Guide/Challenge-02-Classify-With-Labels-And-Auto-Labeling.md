@@ -31,7 +31,19 @@ In this task, you will use Exchange Online PowerShell to prove that unified audi
    Connect-ExchangeOnline -ShowBanner:$false
    ```
 
-2. Read the current setting. If it is false, enable it, wait for the service to accept the change, and then read it again.
+2. Enable organization customization. A newly provisioned Microsoft 365 tenant is **dehydrated**, which blocks the command in the next step. Run this first and wait for it to finish.
+
+   ```powershell
+   if (-not (Get-OrganizationConfig).IsDehydrated -eq $false) {
+       Enable-OrganizationCustomization
+   }
+   ```
+
+   This takes a few minutes. If it reports that the organization is already enabled for customization, continue to the next step.
+
+   > [!Important] Without this, the next step fails with *"The command you tried to run isn't currently allowed in your organization. To run this command, you first need to run the command: Enable-OrganizationCustomization."*
+
+3. Read the current setting. If it is false, enable it, wait for the service to accept the change, and then read it again.
 
    ```powershell
    $auditEnabled = [bool](Get-AdminAuditLogConfig).UnifiedAuditLogIngestionEnabled
@@ -46,7 +58,7 @@ In this task, you will use Exchange Online PowerShell to prove that unified audi
    }
    ```
 
-3. Confirm that the final assertion output is exactly:
+4. Confirm that the final assertion output is exactly:
 
    ```text
    True
