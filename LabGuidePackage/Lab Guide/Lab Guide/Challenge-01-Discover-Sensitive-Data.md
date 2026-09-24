@@ -58,7 +58,7 @@ In this task, you will verify how the built-in classifiers respond to the contro
 
 In this task, you will distribute the controlled documents between the two Microsoft 365 workloads that the policy will inspect.
 
-1. From the Microsoft 365 app launcher, open **SharePoint**, create a private team site named **Zava Discovery Site**, and wait until its **Documents** library is available.
+1. From the Microsoft 365 app launcher, open **SharePoint**. If an **Explore SharePoint** dialog appears, select **Dismiss** - it overlays the page controls until you close it. Then select **Build** > **Site** > **Team site** > **Standard team**, create a private team site named **Zava Discovery Site**, and wait until its **Documents** library is available.
 
 2. Upload **Zava-Customer-Payments.docx** and **Zava-Mixed-Sensitive-Data.docx** from **C:\Users\Public\Documents\ZavaDiscovery** to the SharePoint site's **Documents** library. Confirm that both file names appear in the library.
 
