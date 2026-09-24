@@ -21,20 +21,22 @@ This challenge establishes a Microsoft Purview Data Loss Prevention baseline for
 
 In this task, you will create three Word documents containing fictitious values suitable for classifier testing. Do not add real personal, employee, customer, or payment information.
 
-1. On the lab VM, open Microsoft Edge and sign in to <https://www.microsoft365.com> with the following credentials:
+1. **On the lab VM** (not your own machine), open Microsoft Edge and sign in to <https://www.microsoft365.com> with the following credentials:
 
    - **Username:** <inject key="AzureAdUserEmail"></inject>
    - **Temporary Access Pass:** <inject key="AzureAdUserPassword"></inject>
 
-2. Open **OneDrive**, create a folder named **Zava Discovery Documents**, and confirm that the folder opens successfully.
+2. Open **OneDrive** from the app launcher (the grid icon in the top-left corner), then create a folder named **Zava Discovery Documents** and confirm that the folder opens successfully.
+
+   > [!NOTE] `www.microsoft365.com` opens the Microsoft 365 Copilot page rather than a tile launcher, so use the app launcher grid to reach OneDrive. If OneDrive does not finish loading, go directly to `https://<your-tenant>-my.sharepoint.com` instead.
 
 3. Use Word for the web to create **Zava-Customer-Payments.docx** in that folder. Add a heading that identifies the content as synthetic training data, followed by a fictitious cardholder name, the field label **Credit card number**, the non-live test value **4532 0151 1283 0366**, and the expiration date **12/2032**. Save and close the document.
 
-4. Create **Zava-Employee-Records.docx** in the same folder. Add a heading that identifies the content as synthetic training data, followed by a fictitious employee name, the field label **Social Security Number**, and the non-live test value **078-05-1120**. Save and close the document.
+4. Create **Zava-Employee-Records.docx** in the same folder. Add a heading that identifies the content as synthetic training data, followed by a fictitious employee name, the field label **Social Security Number**, and the non-live test value **555-12-3456**. Save and close the document.
 
 5. Create **Zava-Mixed-Sensitive-Data.docx** in the same folder. Include the same synthetic-data notice and both labeled test records from the preceding two steps. Save and close the document.
 
-6. Download the three documents to **C:\Users\Public\Documents\ZavaDiscovery**. Create the local folder first if it does not exist, and verify that all three `.docx` files are present.
+6. Still on the lab VM, download the three documents to **C:\Users\Public\Documents\ZavaDiscovery**. Create the folder first if it does not exist, and verify that all three `.docx` files are present. Task 2 uploads these files from that exact path, so they must be on the lab VM rather than on your own machine.
 
 > [!Important] The values in this challenge are fictitious and are used only in the disposable lab tenant. Never substitute live regulated data.
 

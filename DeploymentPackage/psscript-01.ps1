@@ -132,11 +132,11 @@ function New-MinimalDocx {
     Remove-Item -LiteralPath $work -Recurse -Force
 }
 $cards = @('4111 1111 1111 1111','5555 5555 5555 4444','4012 8888 8888 1881','4222 2222 2222 2','3782 822463 10005')
-$ssns = @('219-09-9999','078-05-1120','457-55-5462','212-09-7694','001-01-0001')
+$ssns = @('555-12-3456','447-31-8756','612-48-2291','457-55-5462','212-09-7694')
 New-MinimalDocx -Path (Join-Path $Destination 'Zava-Customer-Payments.docx') -Lines @('Zava fictional customer payment test data','Credit card numbers used only for classifier testing') + $cards
 New-MinimalDocx -Path (Join-Path $Destination 'Zava-Employee-Records.docx') -Lines @('Zava fictional employee identity test data','U.S. Social Security numbers used only for classifier testing') + $ssns
 New-MinimalDocx -Path (Join-Path $Destination 'Zava-Mixed-Sensitive-Data.docx') -Lines @('Zava fictional mixed sensitive-data test record','Credit card numbers') + $cards + @('U.S. Social Security numbers') + $ssns
-@('Zava fictional endpoint DLP test data','Credit card number: 4111 1111 1111 1111','U.S. Social Security number: 219-09-9999') | Set-Content -LiteralPath (Join-Path $Destination 'Zava-Endpoint-Sensitive-Data.txt') -Encoding UTF8
+@('Zava fictional endpoint DLP test data','Credit card number: 4111 1111 1111 1111','U.S. Social Security number: 555-12-3456') | Set-Content -LiteralPath (Join-Path $Destination 'Zava-Endpoint-Sensitive-Data.txt') -Encoding UTF8
 Write-Host "Created four synthetic files in $Destination"
 '@
     Set-Content -LiteralPath (Join-Path $helperRoot 'New-ZavaSyntheticEvidence.ps1') -Value $syntheticHelper -Encoding UTF8 -Force
