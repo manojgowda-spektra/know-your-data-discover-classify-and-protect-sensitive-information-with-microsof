@@ -36,7 +36,7 @@ In this task, you will create three Word documents containing fictitious values 
 
 5. Create **Zava-Mixed-Sensitive-Data.docx** in the same folder. Include the same synthetic-data notice and both labeled test records from the preceding two steps. Save and close the document.
 
-6. Still on the lab VM, download the three documents to **C:\Users\Public\Documents\ZavaDiscovery**. Create the folder first if it does not exist, and verify that all three `.docx` files are present. Task 2 uploads these files from that exact path, so they must be on the lab VM rather than on your own machine.
+6. Still on the lab VM, create the folder **C:\Users\Public\Documents\ZavaDiscovery** in File Explorer if it does not already exist. Then, back in OneDrive, select all three documents, choose **Download**. Microsoft Edge saves them to its default **Downloads** folder, not to the folder above — in File Explorer, move (do not copy) all three `.docx` files from **Downloads** into **C:\Users\Public\Documents\ZavaDiscovery**, then verify all three are present there. Task 2 uploads these files from that exact path, so they must be on the lab VM rather than on your own machine.
 
 > [!Important] The values in this challenge are fictitious and are used only in the disposable lab tenant. Never substitute live regulated data.
 
