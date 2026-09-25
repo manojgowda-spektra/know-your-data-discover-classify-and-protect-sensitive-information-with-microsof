@@ -18,6 +18,10 @@ After completing this introduction, you will be able to:
 2. Sign in when prompted with the assigned lab account:
    - **Username:** <inject key="AzureAdUserEmail"></inject>
    - **Temporary Access Pass:** <inject key="AzureAdUserPassword"></inject>
+
+   > [!NOTE]
+   > On first sign-in you may be prompted to set up Microsoft Authenticator or other security info. This step can be skipped — select **Skip for now** (or equivalent) and continue. It is not required for this lab.
+
 3. On **Subscriptions**, positively verify that **Microsoft 365 E5** appears for your account.
 
 > [!IMPORTANT]
