@@ -99,13 +99,13 @@ These exact Devices-only policies and rules exist, each with a content condition
 - `Zava Block Unsanctioned Cloud Uploads` / `Zava Block Sensitive Uploads to Unsanctioned Cloud Rule`: block `Upload to a restricted cloud service domain` for `Zava Unsanctioned Cloud Storage`.
 - `Zava Block Generative AI Sharing` / `Zava Block Sensitive Data to Generative AI Rule`: block both `Upload to a restricted cloud service domain` and `Paste to supported browsers` for built-in, non-editable `Generative AI Websites`.
 
-`Zava Unsanctioned Cloud Storage` contains exactly `dropbox.com`, `drive.google.com`, and `box.com`. The learner tests `Zava-Endpoint-Sensitive-Data.txt` in Edge and interprets the observed block/policy-tip evidence. Sync and telemetry delay are instructional caveats, not grading inputs.
+`Zava Unsanctioned Cloud Storage` contains exactly `dropbox.com`, `drive.google.com`, and `box.com`. No device is onboarded, so no block, policy tip or Activity explorer event can occur. The learner explains that an empty Activity explorer is the expected result. Grading is on configuration only.
 
 ### Rubric
 
 **Full credit:** correct statement of the onboarded-device dependency and the empty device list; exact three policies/rules; Devices-only scope; either-SIT conditions; correct block actions; exact custom domain group and domains; built-in `Generative AI Websites`; both generative-AI actions; risk interpretation; successful `Validate-Zava-Endpoint-DLP`.
 
-**Partial credit:** configuration is exact but one physical removable-media test is unavailable and the operator confirms device readiness. Missing content conditions, wrong domain/group, non-Devices scope, or one missing generative-AI action is material. Do not deduct for delayed Activity explorer events.
+**Partial credit:** Missing content conditions, wrong domain/group, non-Devices scope, or one missing generative-AI action is material. Do not deduct for delayed Activity explorer events.
 
 ```powershell
 Connect-IPPSSession

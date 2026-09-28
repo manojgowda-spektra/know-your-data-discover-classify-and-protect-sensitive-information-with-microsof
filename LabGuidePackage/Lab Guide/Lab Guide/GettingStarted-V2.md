@@ -67,7 +67,7 @@ You will complete four challenges:
 
 1. **Discover sensitive data:** create the synthetic documents `Zava-Customer-Payments.docx`, `Zava-Employee-Records.docx`, and `Zava-Mixed-Sensitive-Data.docx`; then configure `Zava Discovery Baseline` with `Zava Discovery Sensitive Data Rule` in simulation mode.
 2. **Classify with labels and auto-labeling:** create `Zava Public`, `Zava Internal`, `Zava Confidential`, and `Zava Highly Confidential`; publish them through `Zava Global Label Policy`; and configure `Zava Auto-Label Policy` with `Zava High-Risk Identity Data Rule` in simulation mode.
-3. **Protect the endpoint:** configure `Zava Block Removable Storage`, `Zava Block Unsanctioned Cloud Uploads`, and `Zava Block Generative AI Sharing`; then test with `Zava-Endpoint-Sensitive-Data.txt` in Microsoft Edge.
+3. **Protect the endpoint:** configure `Zava Block Removable Storage`, `Zava Block Unsanctioned Cloud Uploads`, and `Zava Block Generative AI Sharing`, and explain why no endpoint event can appear in a tenant with no onboarded device.
 4. **Detect departing-user risk:** configure `Zava Departing Employee Data Theft`, complete a guided portal cross-check, and then record seven Azure VM evidence tags on the VM resolved by DeploymentID: `ZavaIRPolicy`, `ZavaIRTemplate`, `ZavaIRPolicyType`, `ZavaIRTrigger`, `ZavaIRPriorityPages`, `ZavaIRIndicators`, and `ZavaIREvidenceUtc`.
 
 The six-hour booking includes **255 minutes of active work** across Getting Started and the four challenges, plus this concrete **105-minute operating allowance**:
