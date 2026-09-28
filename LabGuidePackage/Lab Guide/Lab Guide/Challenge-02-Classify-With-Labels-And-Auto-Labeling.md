@@ -274,7 +274,7 @@ In this task, you will publish all four labels to all users and synchronize cont
    Execute-AzureAdLabelSync
    ```
 
-   If `Connect-IPPSSession` fails with *Error Acquiring Token* or *Object reference not set to an instance of an object*, run `Connect-IPPSSession -DisableWAM` instead; it signs in through the browser rather than the Windows account broker.
+   If `Connect-IPPSSession` fails with *Error Acquiring Token* or *Object reference not set to an instance of an object*, close the window, open a new Windows PowerShell window, and run the two commands there. The sign-in breaks in a window where other Microsoft 365 or Azure modules are already loaded; `-DisableWAM` does not avoid it.
 
 > [!Note] Label and publishing-policy propagation can take up to 24 hours. Propagation is not part of validation in this challenge.
 
