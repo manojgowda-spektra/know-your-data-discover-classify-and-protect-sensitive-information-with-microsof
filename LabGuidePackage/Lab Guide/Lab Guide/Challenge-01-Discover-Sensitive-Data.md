@@ -44,7 +44,7 @@ In this task, you will create three Word documents containing fictitious values 
 
 In this task, you will verify how the built-in classifiers respond to the controlled files before using those classifiers in a policy.
 
-1. In Microsoft Edge, open the [Microsoft Purview portal](https://purview.microsoft.com), then open **Information Protection** > **Classifiers** > **Sensitive info types**.
+1. In Microsoft Edge, open the [Microsoft Purview portal](https://purview.microsoft.com), then open **Information Protection** > **Classifiers** > **Sensitive info types**. If a welcome dialog appears, close it as described in Getting Started.
 
 2. Search for and open **Credit Card Number**. Select **Test**, upload **C:\Users\Public\Documents\ZavaDiscovery\Zava-Customer-Payments.docx**, start the test, and review the match result before finishing the test.
 
@@ -58,7 +58,7 @@ In this task, you will verify how the built-in classifiers respond to the contro
 
 In this task, you will distribute the controlled documents between the two Microsoft 365 workloads that the policy will inspect.
 
-1. From the Microsoft 365 app launcher, open **SharePoint**. If an **Explore SharePoint** dialog appears, select **Dismiss** - it overlays the page controls until you close it. Then select **Build** > **Overview** > **Site** > **Team site** > **Standard team**, create a private team site named **Zava Discovery Site**, and wait until its **Documents** library is available.
+1. From the Microsoft 365 app launcher, open **SharePoint**. If an **Explore SharePoint** dialog appears, select **Dismiss** - it overlays the page controls until you close it. Then select **Build** > **Site** (if **Site** is not shown, select **Overview** first) > **Team site** > **Standard team** > **Use template**. Type the site name **Zava Discovery Site**; the group email address and site address fill in automatically. If **Group email address** stays empty, type **ZavaDiscoverySite** in it. Keep **Private - only members can access this site**, select **Create site**, and wait until its **Documents** library is available.
 
 2. Upload **Zava-Customer-Payments.docx** and **Zava-Mixed-Sensitive-Data.docx** from **C:\Users\Public\Documents\ZavaDiscovery** to the SharePoint site's **Documents** library. Confirm that both file names appear in the library.
 

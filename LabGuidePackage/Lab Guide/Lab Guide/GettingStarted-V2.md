@@ -29,7 +29,7 @@ After completing this introduction, you will be able to:
 
 4. Confirm that you can use the dedicated Windows lab VM and Microsoft Edge. Edge is the required browser for validation and endpoint testing. Chrome and Firefox can be used for supported endpoint actions only when the Microsoft Purview extension is installed.
 5. Keep the supplied Temporary Access Pass private. Use it only for interactive sign-in when requested. Never place it in a script, file, log, command history, or noninteractive credential object.
-6. Be aware that the operator prepared the hot instance at least 24 hours before delivery. The operator assigned Microsoft 365 E5, completed Microsoft Defender for Endpoint tenant provisioning, assigned Global Administrator and the required Microsoft Purview role groups, and onboarded the VM to Microsoft Purview.
+6. Be aware that the operator assigned Microsoft 365 E5, Global Administrator and the required Microsoft Purview role groups before delivery. The lab VM is **not** onboarded to Microsoft Purview; Challenge 3 explains why and is graded on configuration only.
 7. The required Microsoft Purview role-group assignments are `Information Protection`, `Content Explorer List Viewer`, `Content Explorer Content Viewer`, `Insider Risk Management`, and `Compliance Administrator`.
 
 > [!IMPORTANT]
@@ -131,10 +131,10 @@ Simulation results, Content Explorer counts, label propagation, Activity explore
 
 1. On the Windows lab VM, open Microsoft Edge and go to <https://purview.microsoft.com>.
 2. Sign in with <inject key="AzureAdUserEmail"></inject> and the provided Temporary Access Pass when prompted.
-3. If the first-run welcome dialog appears, review the terms, select **Get started**, and dismiss or follow the teaching prompts.
-4. Confirm that the home page displays the Microsoft Purview solutions available through your subscription and permissions. Select **View all solutions** when a required solution card is not on the home page.
+3. Microsoft Purview shows a welcome dialog the first time you open the portal and again the first time you open some solutions. Close it with **Get started** or the **X**, whichever closes it. If a **Switch back to the classic portal?** panel appears instead, select the back arrow and then **Get started** - never select **Switch**.
+4. Confirm that the home page displays the Microsoft Purview solutions available through your subscription and permissions. If a required solution card is not on the home page, use **Solutions** in the left navigation instead of **View all solutions**.
 5. Locate **Data Loss Prevention**, **Information Protection**, and **Insider Risk Management**. The exact cards visible depend on subscription and permissions; if any required solution remains unavailable after refresh and sign-in verification, contact the lab operator.
-6. Locate **Settings** in the global left navigation or top command bar. In Challenge 3, use **Settings** > **Device onboarding** > **Device report** to review health and **Settings** > **Device onboarding** > **Devices** to inspect the assigned VM's configuration and policy-sync details.
+6. Locate **Settings** in the global left navigation or top command bar. In Challenge 3, you will use **Settings** > **Device onboarding** > **Devices** to confirm that no device is onboarded in this tenant.
 
 ## Support contact
 

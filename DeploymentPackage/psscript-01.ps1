@@ -149,59 +149,45 @@ $results | ConvertTo-Json -Depth 4
     Set-Content -LiteralPath (Join-Path $helperRoot 'Test-ZavaVmReadiness.ps1') -Value $readinessScript -Encoding UTF8 -Force
 
     $operatorRunbook = @'
-# Operator-only hot-instance runbook
+# Operator-only runbook
 
-This runbook is for the lab operator, not the learner. The Azure resources may remain provisioned for at least 24 hours before delivery; the VM does not need to run continuously. Never place onboarding packages, tokens, passwords, certificates, application secrets, or a Temporary Access Pass in files, scripts, command history, transcripts, or learner folders.
+This runbook is for the lab operator, not the learner. Never place tokens, passwords, certificates, application secrets, or a Temporary Access Pass in files, scripts, command history, transcripts, or learner folders.
 
-## 1. Hot-instance operating checklist
+## 1. Before release
 
-1. Keep the Azure resources provisioned for the required 24-hour preparation period.
-2. Start the VM only for onboarding, policy synchronization, telemetry collection, and release checks.
-3. Deallocate the VM after every such window.
-4. Start the VM shortly before learner release and complete the final connectivity, health, policy-sync, and telemetry checks.
-5. Retain `Standard_B2s` with `StandardSSD_LRS`. Run a representative-workload pilot; if the pilot shows sustained memory pressure or unacceptable responsiveness, use the approved `Standard_B2ms` fallback while retaining `StandardSSD_LRS`.
-6. Run `C:\LabFiles\Helpers\Test-ZavaVmReadiness.ps1`; confirm Edge, required modules, current Windows updates, internet connectivity, correct time synchronization, and removable-media test capability.
-7. Keep `C:\LabFiles\Operator` restricted to local Administrators.
+1. Confirm the VM is running and reachable, and run `C:\LabFiles\Helpers\Test-ZavaVmReadiness.ps1`; confirm Edge, required modules, internet connectivity and correct time synchronization.
+2. Keep `C:\LabFiles\Operator` restricted to local Administrators.
+3. The VM size is `Standard_D2s_v5` with `StandardSSD_LRS`. Do not change it without also updating the Azure Policy allow-list.
 
-## 2. Assign Microsoft 365 E5
+## 2. Confirm Microsoft 365 E5
 
-Connect interactively with an operator administrator identity. Assign the learner the available `SPE_E5` SKU, set usage location, and verify Microsoft 365 E5 at `https://portal.office.com/account/#subscriptions`.
+Confirm that the tenant holds Microsoft 365 E5 and that it is assigned to the learner: sign in as the learner at `https://portal.office.com/account/#subscriptions`. If E5 is missing from the tenant, the CloudLabs licence allocation failed; resolve it before release. Allow about 30 minutes after assignment before the learner starts, because Microsoft Purview returns permission errors until the licence propagates.
 
-## 3. Assign administrative and Microsoft Purview role groups
+## 3. Confirm administrative and Microsoft Purview role groups
 
-Assign Global Administrator in Microsoft Entra and the following Security & Compliance PowerShell role-group identities: `InformationProtection`, `ContentExplorerListViewer`, `ContentExplorerContentViewer`, `InsiderRiskManagement`, and `ComplianceAdministrator`. Confirm all assignments have propagated. Never create a `PSCredential` from a Temporary Access Pass.
+Confirm Global Administrator in Microsoft Entra and the role groups `InformationProtection`, `ContentExplorerListViewer`, `ContentExplorerContentViewer`, `InsiderRiskManagement`, and `ComplianceAdministrator`, and that the assignments have propagated. Never create a `PSCredential` from a Temporary Access Pass.
 
-## 4. Provision Defender for Endpoint and onboard the VM
+## 4. Do not onboard the VM
 
-1. Start the VM for the onboarding window, provision Microsoft Defender for Endpoint, and wait for tenant initialization.
-2. Enable Microsoft Purview device onboarding and obtain a fresh Windows 10/11 local-script onboarding package from the current tenant portal.
-3. Stage it temporarily in an Administrator-only location, run it elevated, then securely remove all onboarding material.
-4. Confirm the `Sense` service and verify that the device is recently seen and healthy in both Microsoft Defender and Microsoft Purview.
-5. Confirm current connectivity, healthy configuration, policy sync, and readiness to receive Endpoint DLP updates.
-6. Deallocate after the window. Start shortly before release and repeat all release checks.
-
-The operator remediates any failed health state. The learner never onboards or repairs the device.
+Challenge 3 is graded on configuration only. Its first task asks the learner to confirm that **no device is onboarded**. Do not provision Defender for Endpoint onboarding, run an onboarding package, or add the VM to Microsoft Purview device onboarding.
 
 ## 5. Temporary Access Pass handoff
 
-Issue the TAP only through Microsoft Entra authentication methods and the approved secure field. Use it only for interactive bootstrap sign-in. Never treat it as a password, put it in a credential object, use it unattended, or persist it.
+Issue the TAP only through Microsoft Entra authentication methods and the approved secure field. Use it only for interactive sign-in. Never treat it as a password, put it in a credential object, use it unattended, or persist it.
 
 ## 6. Final release gate
 
-- Resources have remained provisioned for at least 24 hours; the VM ran only in required windows and was deallocated after each window.
-- The representative-workload pilot passed on `Standard_B2s`, or the approved `Standard_B2ms` fallback was selected; the disk remains `StandardSSD_LRS`.
-- The VM was started shortly before release and all connectivity, onboarding, telemetry, health, and policy-sync checks passed.
-- Microsoft 365 E5, Global Administrator, and all five Purview role groups are assigned and propagated.
-- Defender provisioning is complete; the device is healthy and ready for Endpoint DLP updates.
-- Edge and removable-media testing work; the TAP was securely handed off and not persisted.
+- The VM is running and the readiness script passed.
+- Microsoft 365 E5 is present in the tenant, assigned to the learner, and has had time to propagate.
+- Global Administrator and all five Purview role groups are assigned and propagated.
+- The VM is not onboarded to Microsoft Purview or Defender for Endpoint.
+- The TAP was securely handed off and not persisted.
 - Nothing is pre-seeded. Security Copilot is not required.
 
 ## Microsoft Learn references
 
 - https://learn.microsoft.com/purview/purview-permissions
-- https://learn.microsoft.com/purview/device-onboarding-overview
-- https://learn.microsoft.com/purview/device-onboarding-health-reports-dashboard
-- https://learn.microsoft.com/defender-endpoint/configure-endpoints-gp#verify-device-onboarding
+- https://learn.microsoft.com/purview/endpoint-dlp-learn-about
 - https://learn.microsoft.com/entra/identity/authentication/howto-authentication-temporary-access-pass
 - https://learn.microsoft.com/powershell/azure/protect-secrets
 - https://learn.microsoft.com/azure/virtual-machines/extensions/custom-script-windows#extension-schema
@@ -217,7 +203,7 @@ Issue the TAP only through Microsoft Entra authentication methods and the approv
     $learnerReadme = @'
 # Zava lab VM
 
-Use Microsoft Edge for validation. Start with the Microsoft 365 License Check shortcut. If Microsoft 365 E5 is absent, or if the device is not healthy in Microsoft Purview, stop and contact the lab operator.
+Use Microsoft Edge for validation. Start with the Microsoft 365 License Check shortcut. If Microsoft 365 E5 is absent, stop and contact the lab operator. This VM is deliberately not onboarded to Microsoft Purview; Challenge 3 explains why.
 
 Nothing is pre-seeded in the tenant. Security Copilot is not provisioned and is not required. You generate your own evidence.
 
