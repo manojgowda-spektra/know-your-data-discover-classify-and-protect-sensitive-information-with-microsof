@@ -95,7 +95,13 @@ In this task, you will perform a guided portal cross-check and merge a compact, 
    - The content-priority detail stage prioritizes `Zava Highly Confidential` and scores all activity.
    - The policy contains all four required Office indicators.
 3. Close the details or editing workflow without submitting changes after the cross-check.
-4. On the VM, open **Windows PowerShell**. Run the commands below. They fail clearly if no authenticated Azure context exists. Compare the displayed account, tenant, subscription name, and subscription ID with the lab context shown in the Azure portal, and type `YES` only after confirming that the active context is the lab context. When prompted, paste deployment ID <inject key="DeploymentID"></inject>. The commands derive the subscription ID from the confirmed active context and resolve the **lab VM for deployment <inject key="DeploymentID" enableCopy="false"></inject>** by its existing `DeploymentID` tag; no resource-group name is assumed.
+4. On the VM, open **Windows PowerShell** and sign in to Azure with the learner account. If the sign-in window fails with a window-handle or listener error, run `Connect-AzAccount -UseDeviceAuthentication` instead.
+
+   ```powershell
+   Connect-AzAccount
+   ```
+
+   Then run the commands below. They fail clearly if no authenticated Azure context exists. Compare the displayed account, tenant, subscription name, and subscription ID with the lab context shown in the Azure portal, and type `YES` only after confirming that the active context is the lab context. When prompted, paste deployment ID <inject key="DeploymentID"></inject>. The commands derive the subscription ID from the confirmed active context and resolve the **lab VM for deployment <inject key="DeploymentID" enableCopy="false"></inject>** by its existing `DeploymentID` tag; no resource-group name is assumed.
 
    ```powershell
    $context = Get-AzContext
