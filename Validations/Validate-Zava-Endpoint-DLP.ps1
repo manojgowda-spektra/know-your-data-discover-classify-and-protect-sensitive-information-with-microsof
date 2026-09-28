@@ -105,6 +105,54 @@ function Test-SensitiveInformationCondition {
     return $hasCreditCard -and $hasSsn -and $hasEitherOperator
 }
 
+function Get-IgnoreCaseValue {
+    param($Object, [string]$Key)
+    if ($null -eq $Object) { return $null }
+    if ($Object -is [System.Collections.IDictionary]) {
+        foreach ($k in $Object.Keys) { if ("$k" -ieq $Key) { return $Object[$k] } }
+        return $null
+    }
+    $property = $Object.PSObject.Properties | Where-Object { $_.Name -ieq $Key } | Select-Object -First 1
+    if ($property) { return $property.Value }
+    return $null
+}
+
+# Custom sensitive service domain groups (id -> name) from Get-PolicyConfig SiteGroups; built-in groups are not listed.
+function Get-SiteGroupNames {
+    $map = @{}
+    try {
+        $siteGroups = (Get-PolicyConfig -ErrorAction Stop).SiteGroups
+        if ($siteGroups -is [string]) { $siteGroups = $siteGroups | ConvertFrom-Json -ErrorAction Stop }
+        foreach ($group in @($siteGroups)) {
+            $id = [string](Get-IgnoreCaseValue $group 'Id')
+            if ($id) { $map[$id.ToLowerInvariant()] = [string](Get-IgnoreCaseValue $group 'Name') }
+        }
+    } catch { }
+    return $map
+}
+
+# EndpointDlpRestrictions store one entry per setting (RemovableMedia, CloudEgress, PasteToBrowser...)
+# with value Block/Audit, and reference domain groups by id.
+function Test-EndpointSettingBlocked {
+    param($Rule, [string]$Setting, [string]$GroupProperty, [string]$GroupName, [hashtable]$SiteGroups)
+    foreach ($restriction in @($Rule.EndpointDlpRestrictions)) {
+        if ("$(Get-IgnoreCaseValue $restriction 'setting')" -ine $Setting) { continue }
+        if ("$(Get-IgnoreCaseValue $restriction 'value')" -ine 'Block') { return $false }
+        if ([string]::IsNullOrWhiteSpace($GroupProperty)) { return $true }
+        foreach ($entry in @(Get-IgnoreCaseValue $restriction $GroupProperty)) {
+            if ($null -eq $entry -or "$(Get-IgnoreCaseValue $entry 'action')" -ine 'Block') { continue }
+            $id = "$(Get-IgnoreCaseValue $entry 'id')".ToLowerInvariant()
+            if ($GroupName -eq '<built-in>') {
+                if ($id -and -not $SiteGroups.ContainsKey($id)) { return $true }
+            } elseif ($SiteGroups.ContainsKey($id) -and $SiteGroups[$id] -ceq $GroupName) {
+                return $true
+            }
+        }
+        return $false
+    }
+    return $false
+}
+
 function Test-BlockedEndpointAction {
     param(
         $Rule,
@@ -182,12 +230,14 @@ do {
                 Rule = 'Zava Block Sensitive Data to Removable Storage Rule'
                 Actions = @('copy.*(?:removable|usb)', '(?:removable|usb).*copy')
                 Group = ''
+                Setting = 'RemovableMedia'; GroupProperty = ''; GroupName = ''
             },
             @{
                 Policy = 'Zava Block Unsanctioned Cloud Uploads'
                 Rule = 'Zava Block Sensitive Uploads to Unsanctioned Cloud Rule'
                 Actions = @('upload.*(?:cloud|service.*domain)', '(?:cloud|service.*domain).*upload')
                 Group = 'Zava Unsanctioned Cloud Storage'
+                Setting = 'CloudEgress'; GroupProperty = 'cloudEgressGroup'; GroupName = 'Zava Unsanctioned Cloud Storage'
             },
             @{
                 Policy = 'Zava Block Generative AI Sharing'
@@ -195,10 +245,13 @@ do {
                 Actions = @('upload.*(?:cloud|service.*domain)', '(?:cloud|service.*domain).*upload')
                 SecondActions = @('paste.*(?:browser|supported)', '(?:browser|supported).*paste')
                 Group = 'Generative AI Websites'
+                Setting = 'CloudEgress'; GroupProperty = 'cloudEgressGroup'; GroupName = '<built-in>'
+                SecondSetting = 'PasteToBrowser'; SecondGroupProperty = 'pasteSensitiveDomainsGroup'
             }
         )
 
         $allPolicies = @(Get-DlpCompliancePolicy -IncludeExtendedProperties $true -ErrorAction Stop)
+        $siteGroups = Get-SiteGroupNames
         $failures = [System.Collections.Generic.List[string]]::new()
 
         foreach ($item in $expected) {
@@ -230,11 +283,13 @@ do {
             if (-not (Test-SensitiveInformationCondition -Rule $rule -CreditCardId $creditCardId -SsnId $ssnId)) {
                 $failures.Add("Rule '$($item.Rule)' does not expose an either/OR content condition containing both 'Credit Card Number' and 'U.S. Social Security Number'.")
             }
-            if (-not (Test-BlockedEndpointAction -Rule $rule -ActionPatterns $item.Actions -RequiredGroup $item.Group)) {
+            if (-not (Test-EndpointSettingBlocked -Rule $rule -Setting $item.Setting -GroupProperty $item.GroupProperty -GroupName $item.GroupName -SiteGroups $siteGroups) -and
+                -not (Test-BlockedEndpointAction -Rule $rule -ActionPatterns $item.Actions -RequiredGroup $item.Group)) {
                 $groupDetail = if ([string]::IsNullOrWhiteSpace($item.Group)) { '' } else { " for group '$($item.Group)'" }
                 $failures.Add("Rule '$($item.Rule)' does not expose the required Block action$groupDetail.")
             }
             if ($item.ContainsKey('SecondActions') -and
+                -not (Test-EndpointSettingBlocked -Rule $rule -Setting $item.SecondSetting -GroupProperty $item.SecondGroupProperty -GroupName $item.GroupName -SiteGroups $siteGroups) -and
                 -not (Test-BlockedEndpointAction -Rule $rule -ActionPatterns $item.SecondActions -RequiredGroup $item.Group)) {
                 $failures.Add("Rule '$($item.Rule)' does not expose a Block action for Paste to supported browsers using built-in group 'Generative AI Websites'.")
             }
