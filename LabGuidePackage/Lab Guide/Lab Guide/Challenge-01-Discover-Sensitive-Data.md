@@ -36,7 +36,18 @@ In this task, you will create three Word documents containing fictitious values 
 
 5. Create **Zava-Mixed-Sensitive-Data.docx** in the same folder. Include the same synthetic-data notice and both labeled test records from the preceding two steps. Save and close the document.
 
-6. Still on the lab VM, create the folder **C:\Users\Public\Documents\ZavaDiscovery** in File Explorer if it does not already exist. Then, back in OneDrive, select all three documents, choose **Download**. Microsoft Edge saves them to its default **Downloads** folder, not to the folder above — in File Explorer, move (do not copy) all three `.docx` files from **Downloads** into **C:\Users\Public\Documents\ZavaDiscovery**, then verify all three are present there. Task 2 uploads these files from that exact path, so they must be on the lab VM rather than on your own machine.
+6. Still on the lab VM, download the three documents and move them to **C:\Users\Public\Documents\ZavaDiscovery**:
+
+   1. In OneDrive, open **Zava Discovery Documents**. Select **one** document, select **Download**, and repeat for each of the three documents. (Selecting several files at once downloads a single .zip file instead.) Microsoft Edge saves each file to your **Downloads** folder.
+   2. Open **Windows PowerShell** and run the commands below. They create the folder, move the three documents out of **Downloads**, and list the result. Use these commands rather than cut and paste in File Explorer, which may not work in the browser-based lab window.
+
+      ```powershell
+      New-Item -ItemType Directory -Force -Path C:\Users\Public\Documents\ZavaDiscovery | Out-Null
+      Move-Item -Path "$env:USERPROFILE\Downloads\Zava-*.docx" -Destination C:\Users\Public\Documents\ZavaDiscovery -Force
+      Get-ChildItem C:\Users\Public\Documents\ZavaDiscovery | Select-Object Name
+      ```
+
+   3. Confirm that the list shows all three `.docx` files. Task 2 uploads these files from that exact path, so they must be on the lab VM rather than on your own machine.
 
 > [!Important] The values in this challenge are fictitious and are used only in the disposable lab tenant. Never substitute live regulated data.
 
