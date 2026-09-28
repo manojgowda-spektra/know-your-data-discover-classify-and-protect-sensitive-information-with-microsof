@@ -274,6 +274,8 @@ In this task, you will publish all four labels to all users and synchronize cont
    Execute-AzureAdLabelSync
    ```
 
+   If `Connect-IPPSSession` fails with *Error Acquiring Token* or *Object reference not set to an instance of an object*, run `Connect-IPPSSession -DisableWAM` instead; it signs in through the browser rather than the Windows account broker.
+
 > [!Note] Label and publishing-policy propagation can take up to 24 hours. Propagation is not part of validation in this challenge.
 
 ## Task 6: Configure service-side auto-labeling simulation
@@ -355,13 +357,14 @@ In this task, you will inspect the immediate tenant configuration without waitin
    Get-AutoSensitivityLabelRule -Identity "Zava High-Risk Identity Data Rule" | Format-List Name, Policy, Disabled, ContentContainsSensitiveInformation
    ```
 
-6. Re-run the three positive prerequisite assertions and confirm each prints `True`:
+6. Re-confirm the three prerequisites and check that each prints `True`. Run each check where its module is already connected: the audit check in an Exchange Online session, the SharePoint check in the SharePoint session from Task 2, and the group-labeling check in the Microsoft Graph window from Task 3. Do not run the Microsoft Graph command in the Exchange Online window.
 
    ```powershell
-   Disconnect-ExchangeOnline -Confirm:$false -ErrorAction SilentlyContinue
-   Connect-ExchangeOnline -ShowBanner:$false
+   # Exchange Online session
    [bool](Get-AdminAuditLogConfig).UnifiedAuditLogIngestionEnabled
+   # SharePoint session (Task 2)
    [bool](Get-SPOTenant).EnableAIPIntegration
+   # Microsoft Graph window (Task 3)
    $grpUnifiedSetting = Get-MgBetaDirectorySetting | Where-Object DisplayName -eq "Group.Unified"
    [bool]::Parse(($grpUnifiedSetting.Values | Where-Object Name -eq "EnableMIPLabels").Value)
    ```
