@@ -34,7 +34,7 @@ In this task, you will use Exchange Online PowerShell to prove that unified audi
 2. Enable organization customization. A newly provisioned Microsoft 365 tenant is **dehydrated**, which blocks the command in the next step. Run this first and wait for it to finish.
 
    ```powershell
-   if (-not (Get-OrganizationConfig).IsDehydrated -eq $false) {
+   if ((Get-OrganizationConfig).IsDehydrated) {
        Enable-OrganizationCustomization
    }
    ```
@@ -72,11 +72,14 @@ In this task, you will use Exchange Online PowerShell to prove that unified audi
 
 In this task, you will enable Office-file sensitivity-label processing in SharePoint and OneDrive and positively verify the tenant property.
 
-1. Copy the SharePoint admin URL supplied with the lab. In the same elevated PowerShell window, connect interactively when prompted.
+1. In the same elevated PowerShell window, build your SharePoint admin URL from your lab username, <inject key="AzureAdUserEmail"></inject>, and connect interactively when prompted. Your tenant name is the part of the username between **@** and **.onmicrosoft.com**, so the URL has the form `https://<tenant>-admin.sharepoint.com`. Paste your username when the script asks for it.
 
    ```powershell
    Import-Module Microsoft.Online.SharePoint.PowerShell
-   $spoAdminUrl = Read-Host "Paste the SharePoint admin URL"
+   $labUpn = Read-Host "Paste your lab username"
+   $tenantName = $labUpn.Split('@')[1].Split('.')[0]
+   $spoAdminUrl = "https://$tenantName-admin.sharepoint.com"
+   $spoAdminUrl
    Connect-SPOService -Url $spoAdminUrl
    ```
 
