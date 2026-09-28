@@ -182,7 +182,7 @@
       ],
       "properties": {
         "hardwareProfile": {
-          "vmSize": "Standard_D2s_v3"
+          "vmSize": "Standard_D2s_v5"
         },
         "osProfile": {
           "computerName": "[variables('computerName')]",
