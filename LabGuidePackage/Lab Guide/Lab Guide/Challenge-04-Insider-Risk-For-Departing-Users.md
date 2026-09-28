@@ -166,7 +166,7 @@ In this task, you will perform a guided portal cross-check and merge a compact, 
 
 In this task, you will explain why policy creation does not immediately create an alert, then validate the cloud-visible VM tags.
 
-1. Open the **Alerts** dashboard in Insider Risk Management and observe its current state. An empty queue is expected in this lab.
+1. Open the **Alerts** dashboard in Insider Risk Management and observe its current state. An empty queue (**No alerts available**) is expected in this lab. If **Alerts** is not yet in the Insider Risk Management menu, the role groups you added in Getting Started are still propagating; open <https://purview.microsoft.com/insiderriskmgmt/alertspage> directly. If a *Client Error* message appears from the Triage Agent panel, select **OK**; it does not affect this task.
 2. Confirm your understanding: an alert requires a user in policy scope to have the configured triggering event, matching activity for selected indicators, and a resulting risk score that meets the alert threshold. Creating the policy alone meets none of those alert-generation conditions.
 3. Do not delete a Microsoft Entra user to manufacture a trigger, do not generate synthetic insider-risk activity, and do not wait for an alert. Alert generation and delayed telemetry are not validation requirements.
 4. Select the validation below. It checks the exact seven evidence tags on the deployed Azure VM: policy, template, policy type, trigger, both priority pages, the four indicators in their required order, and the UTC evidence timestamp created after the portal cross-check. It does not use alert state as proof of success.
