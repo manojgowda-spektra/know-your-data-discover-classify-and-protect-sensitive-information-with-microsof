@@ -256,13 +256,13 @@ In this task, you will create the four labels in increasing sensitivity order wi
 
 In this task, you will publish all four labels to all users and synchronize container-capable labels to Microsoft Entra ID.
 
-1. In the Microsoft Purview portal, go to **Solutions** > **Information Protection** > **Publishing policies**, then select **Publish label**.
+1. In the Microsoft Purview portal, go to **Solutions** > **Information Protection** > **Policies** > **Label publishing policies**, then select **Publish label**.
 
 2. Configure the publishing policy with these exact values:
 
    - **Labels to publish**: `Zava Public`, `Zava Internal`, `Zava Confidential`, and `Zava Highly Confidential`
    - **Policy scope**: all users and groups
-   - **Policy settings**: do not require users to provide a justification; do not require mandatory labeling; do not configure a default label for documents, email, groups, or sites
+   - **Policy settings**: do not require users to provide a justification; do not require mandatory labeling; do not configure a default label for documents, email, meetings, sites and groups, Engage content, or Fabric and Power BI content. The **Engage content** page can arrive with `Zava Highly Confidential` pre-selected; set it to **None**
    - **Policy name**: `Zava Global Label Policy`
 
 3. Create the policy. Completing the wizard publishes it; there is no separate activation action.
