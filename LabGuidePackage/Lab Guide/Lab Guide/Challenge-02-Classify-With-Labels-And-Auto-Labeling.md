@@ -103,6 +103,18 @@ In this task, you will enable Office-file sensitivity-label processing in ShareP
 
 > [!Note] This tenant-level change can take approximately 15 minutes to take effect. The immediate property assertion must still return `True` before you continue.
 
+5. Confirm that Azure Rights Management is active. Two of the labels in Task 4 use encryption, and Microsoft Purview refuses to create them with *"Rights Management is not active for the tenant"* until it is. In the same elevated window, run the commands below and sign in with the learner account when prompted.
+
+   ```powershell
+   Install-Module AIPService -Scope CurrentUser -Force
+   Import-Module AIPService
+   Connect-AipService
+   if ((Get-AipService) -ne 'Enabled') { Enable-AipService }
+   Get-AipService
+   ```
+
+6. Confirm that the final command prints `Enabled`.
+
 ## Task 3: Enable labeling for Microsoft 365 groups and sites
 
 In this task, you will use Microsoft Graph PowerShell to set `EnableMIPLabels` on the tenant-wide `Group.Unified` directory setting. There is no portal substitute for this setting.
@@ -171,7 +183,11 @@ In this task, you will create the four labels in increasing sensitivity order wi
 
 1. In Microsoft Edge, open <https://purview.microsoft.com>, then go to **Solutions** > **Information Protection** > **Sensitivity labels**.
 
-2. Create `Zava Public` with these exact settings:
+2. Select **Create a label**. Every label needs a **Description for users**; use the description given for each label. On the scope page, **Meetings** is ticked by default - untick it for every label. When a label is created, select **Don't create a policy yet** before **Done**; you publish all four labels together in Task 5.
+
+   Create `Zava Public` with these exact settings:
+
+   - **Description for users**: `Information approved for public release.`
 
    - **Scope**: **Files & other data assets** and **Emails**
    - **Protection settings for files and emails**: none selected
@@ -180,8 +196,10 @@ In this task, you will create the four labels in increasing sensitivity order wi
 
 3. Create `Zava Internal` with these exact settings:
 
+   - **Description for users**: `Internal Zava business information. Do not share outside Zava.`
+
    - **Scope**: **Files & other data assets** and **Emails**
-   - **Content marking**: on
+   - **Content marking**: on (turning it on ticks **Add a footer** by default - untick it)
    - **Header**: on
    - **Header text**: `Zava Internal`
    - **Footer**: off
@@ -191,32 +209,36 @@ In this task, you will create the four labels in increasing sensitivity order wi
 
 4. Create `Zava Confidential` with these exact settings:
 
+   - **Description for users**: `Confidential Zava information. Access is limited to people in Zava.`
+
    - **Scope**: **Files & other data assets** and **Emails**
-   - **Content marking**: on
+   - **Content marking**: on (turning it on ticks **Add a footer** by default - untick it)
    - **Watermark**: on
    - **Watermark text**: `Confidential`
    - **Header** and **Footer**: off
-   - **Encryption**: on
+   - **Control access** (encryption): on
    - **Assign permissions now**: selected
    - **Users and groups**: all users and groups in the organization
-   - **Permissions**: **Co-Author**
+   - **Permissions**: **Editor** (the summary shows it as **Co-Author**)
    - **User access to content expires**: **Never**
-   - **Offline access**: **Never expires**
+   - **Allow offline access**: **Always**
    - **Auto-labeling for files and emails**: off
 
 5. Create `Zava Highly Confidential` with these exact settings:
 
+   - **Description for users**: `Highly confidential Zava information. Restricted to people in Zava.`
+
    - **Scope**: **Files & other data assets**, **Emails**, and **Groups & sites**
-   - **Content marking**: on
+   - **Content marking**: on (turning it on ticks **Add a footer** by default - untick it)
    - **Watermark**: on
    - **Watermark text**: `Highly Confidential`
    - **Header** and **Footer**: off
-   - **Encryption**: on
+   - **Control access** (encryption): on
    - **Assign permissions now**: selected
    - **Users and groups**: all users and groups in the organization
-   - **Permissions**: **Co-Author**
+   - **Permissions**: **Editor** (the summary shows it as **Co-Author**)
    - **User access to content expires**: **Never**
-   - **Offline access**: **Never expires**
+   - **Allow offline access**: **Always**
    - **Privacy and external user access settings**: on
    - **External user access**: off
    - **External sharing and Conditional Access settings**: on

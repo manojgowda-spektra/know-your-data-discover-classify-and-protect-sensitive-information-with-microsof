@@ -180,6 +180,7 @@ Issue the TAP only through Microsoft Entra authentication methods and the approv
 - The VM is running and the readiness script passed.
 - Microsoft 365 E5 is present in the tenant, assigned to the learner, and has had time to propagate.
 - Global Administrator and all five Purview role groups are assigned and propagated.
+- Azure Rights Management is active (`Get-AipService` returns `Enabled`); encrypted labels cannot be created without it.
 - The VM is not onboarded to Microsoft Purview or Defender for Endpoint.
 - The TAP was securely handed off and not persisted.
 - Nothing is pre-seeded. Security Copilot is not required.
