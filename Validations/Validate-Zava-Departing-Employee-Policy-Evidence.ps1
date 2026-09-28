@@ -51,6 +51,11 @@ do {
             }
             else {
                 $timestampText = [string]$vm.Tags[$timestampKey]
+                # Get-AzVM re-parses ISO-looking tag values into local date text; Get-AzTag returns the stored string.
+                try {
+                    $rawTimestamp = (Get-AzTag -ResourceId $vm.Id -ErrorAction Stop).Properties.TagsProperty[$timestampKey]
+                    if (-not [string]::IsNullOrWhiteSpace([string]$rawTimestamp)) { $timestampText = [string]$rawTimestamp }
+                } catch { }
                 $timestamp = [DateTimeOffset]::MinValue
                 $isUtcIso8601 = $timestampText -cmatch '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|\+00:00)$' -and
                     [DateTimeOffset]::TryParse(
