@@ -181,6 +181,7 @@ Issue the TAP only through Microsoft Entra authentication methods and the approv
 - Microsoft 365 E5 is present in the tenant, assigned to the learner, and has had time to propagate.
 - Global Administrator and all five Purview role groups are assigned and propagated.
 - Azure Rights Management is active (`Get-AipService` returns `Enabled`); encrypted labels cannot be created without it.
+- Unified auditing is on (`(Get-AdminAuditLogConfig).UnifiedAuditLogIngestionEnabled` returns `True`). On a newly provisioned tenant `Set-AdminAuditLogConfig` can refuse with 'you first need to run Enable-OrganizationCustomization' for some time even after customization is enabled, and Challenge 2's auto-labeling policy cannot be created until auditing is on. Enable it when the instance is prepared, not at release.
 - The VM is not onboarded to Microsoft Purview or Defender for Endpoint.
 - The TAP was securely handed off and not persisted.
 - Nothing is pre-seeded. Security Copilot is not required.
