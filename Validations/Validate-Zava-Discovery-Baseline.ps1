@@ -85,7 +85,15 @@ function Get-PropertyValues {
     function Visit-PropertyNode {
         param([object]$Current)
 
-        if ($null -eq $Current -or $Current -is [string]) { return }
+        if ($null -eq $Current) { return }
+        if ($Current -is [string]) {
+            # AdvancedRule arrives as a JSON string; parse it like Get-NamedValues does.
+            $text = $Current.Trim()
+            if ($text.StartsWith('{') -or $text.StartsWith('[')) {
+                try { Visit-PropertyNode -Current ($text | ConvertFrom-Json -ErrorAction Stop) } catch { }
+            }
+            return
+        }
 
         if ($Current -is [System.Collections.IDictionary]) {
             foreach ($key in $Current.Keys) {
