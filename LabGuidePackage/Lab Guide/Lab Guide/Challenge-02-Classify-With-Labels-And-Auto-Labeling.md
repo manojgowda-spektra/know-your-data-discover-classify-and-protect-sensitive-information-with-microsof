@@ -119,7 +119,9 @@ In this task, you will enable Office-file sensitivity-label processing in ShareP
 
 In this task, you will use Microsoft Graph PowerShell to set `EnableMIPLabels` on the tenant-wide `Group.Unified` directory setting. There is no portal substitute for this setting.
 
-1. Install or update the required Microsoft Graph modules, then connect with delegated directory-setting permission.
+1. Close the PowerShell window from Tasks 1 and 2 and open a **new** Windows PowerShell window as administrator. Run this task first in that window. Microsoft Graph PowerShell cannot load in a window where the Exchange Online or AIPService modules are already loaded; it fails with *"Method not found: 'Void Azure.Core.TokenRequestContext..ctor"*.
+
+   Install or update the required Microsoft Graph modules, then connect with delegated directory-setting permission.
 
    ```powershell
    Install-Module Microsoft.Graph.Authentication -Scope CurrentUser -Force -AllowClobber
