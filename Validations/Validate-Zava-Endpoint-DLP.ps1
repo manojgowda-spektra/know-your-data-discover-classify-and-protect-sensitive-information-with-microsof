@@ -163,7 +163,9 @@ do {
         Connect-IPPSSession -AppId $appId -Organization $organization -CertificateThumbprint $certificateThumbprint -ShowBanner:$false -ErrorAction Stop | Out-Null
 
         $creditCard = Get-DlpSensitiveInformationType -Identity 'Credit Card Number' -ErrorAction Stop
-        $ssn = Get-DlpSensitiveInformationType -Identity 'U.S. Social Security Number' -ErrorAction Stop
+        # The portal names this type 'U.S. Social Security Number (SSN)'; accept either form.
+        $ssn = @(Get-DlpSensitiveInformationType -ErrorAction Stop | Where-Object { $_.Name -ieq 'U.S. Social Security Number (SSN)' -or $_.Name -ieq 'U.S. Social Security Number' }) | Select-Object -First 1
+        if ($null -eq $ssn) { throw "Sensitive information type 'U.S. Social Security Number (SSN)' was not found in the tenant." }
         $creditCardId = [string]$creditCard.Identity
         if ([string]::IsNullOrWhiteSpace($creditCardId)) { $creditCardId = [string]$creditCard.Id }
         $ssnId = [string]$ssn.Identity

@@ -191,7 +191,8 @@ do {
                     $condition = $rule.AdvancedRule
                 }
 
-                $sitNames = @(Get-NamedValues -Node $condition -CollectionProperty 'sensitivetypes' | Sort-Object -Unique)
+                # The portal names this type 'U.S. Social Security Number (SSN)'; normalise to the base name.
+                $sitNames = @(Get-NamedValues -Node $condition -CollectionProperty 'sensitivetypes' | ForEach-Object { if ($_ -ieq 'U.S. Social Security Number (SSN)') { 'U.S. Social Security Number' } else { $_ } } | Sort-Object -Unique)
                 $expectedSitNames = @('Credit Card Number', 'U.S. Social Security Number')
                 $missingSits = @($expectedSitNames | Where-Object { $sitNames -cnotcontains $_ })
                 $unexpectedSits = @($sitNames | Where-Object { $expectedSitNames -cnotcontains $_ })
