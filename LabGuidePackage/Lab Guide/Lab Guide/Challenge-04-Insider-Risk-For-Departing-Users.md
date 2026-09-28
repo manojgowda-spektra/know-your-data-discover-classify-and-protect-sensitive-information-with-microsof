@@ -23,7 +23,7 @@ In this challenge, you will distinguish globally enabled indicators from indicat
 In this task, you will make the required built-in indicators available to Insider Risk Management policies. A global settings indicator controls whether its signal is collected and available for policy configuration. A policy indicator is a globally enabled indicator selected in one policy; it contributes to risk scoring only for an in-scope user after that policy's triggering event occurs.
 
 1. In Microsoft Edge, open <https://purview.microsoft.com>, then open **Solutions** > **Insider Risk Management**.
-2. Open **Settings** > **Policy indicators** and remain on the **Built-in indicators** tab.
+2. In the Microsoft Purview left navigation, open **Settings** > **Insider Risk Management** > **Policy indicators** and remain on the **Built-In Indicators** tab. (The Insider Risk Management menu itself has no Settings entry.)
 3. Expand **Office indicators** and enable exactly these four current indicators:
    - **Sharing SharePoint files with people outside the organization**
    - **Sharing SharePoint folders with people outside the organization**
@@ -44,42 +44,43 @@ In this task, you will start the full custom-policy workflow rather than accepti
 3. On **Policy template**, select **Data theft by departing users**, review its prerequisites and detected activities, and continue.
 4. Enter the policy name `Zava Departing Employee Data Theft`. Add a description stating that the policy detects possible data theft associated with departing users at Zava.
 5. If an **Admin units** page appears, do not add an administrative unit; continue to the tenant-wide scope page.
-6. On **Users and groups**, select **Include all users and groups**. Do not exclude any users or groups.
-7. On the departure trigger page, select **User account deleted from Microsoft Entra**.
-8. Do not select an HR connector trigger. No HR connector exists in this lab tenant, and the `Data theft by departing users` template supports Microsoft Entra account deletion as its departure trigger.
-
-> [!Note] A Microsoft Entra account deletion is a triggering event, not one of the four Office policy indicators. The trigger brings a user into scope; selected policy indicators then contribute to risk scoring for that user.
+6. On **Users and groups**, select **All users, groups, and adaptive scopes**. On **Exclusions (optional)**, do not exclude any users or groups.
+7. Continue to Task 3. The wizard shows the two content-priority pages before the triggering-event page.
 
 ## Task 3: Complete both content-priority stages and preserve policy indicators
 
 In this task, you will complete the content-priority choice and its detail stage, then select the four indicators in the policy.
 
-1. On the first **Content to prioritize** stage, select **I want to prioritize content** and continue.
+1. On the first **Content to prioritize** stage, select **I want to prioritize content**, tick **Sensitivity labels** under it, and continue.
 2. On the following content-priority detail stage, add the sensitivity label `Zava Highly Confidential` as priority content. Leave other priority-content categories unconfigured.
 3. On the scoring choice in the content-priority detail stage, select **Get alerts for all activity**. This keeps all qualifying policy activity eligible for scoring while increasing the importance of activity involving `Zava Highly Confidential` content.
-4. Continue to **Policy indicators**. Under **Office indicators**, select exactly these four indicators for this policy:
+4. On **Triggering event**, select **User account deleted from Microsoft Entra**. Do not select an HR connector trigger. No HR connector exists in this lab tenant, and the `Data theft by departing users` template supports Microsoft Entra account deletion as its departure trigger.
+
+   > [!Note] A Microsoft Entra account deletion is a triggering event, not one of the four Office policy indicators. The trigger brings a user into scope; selected policy indicators then contribute to risk scoring for that user.
+
+5. Continue to **Policy indicators**. Under **Office indicators**, select exactly these four indicators for this policy:
    - **Sharing SharePoint files with people outside the organization**
    - **Sharing SharePoint folders with people outside the organization**
    - **Downloading content from SharePoint**
    - **Sending email with attachments to recipients outside the organization**
-5. Keep the four Office indicators selected as you continue through sequence detection, cumulative exfiltration detection, risk score boosters, and indicator-threshold pages. Accept the Microsoft-provided defaults on those pages; do not replace the four required indicators.
-6. On the indicator-threshold page, select **Use default thresholds for all indicators**.
-7. Stop on **Review** and compare the summary with this required configuration:
+6. Keep the four Office indicators selected as you continue through sequence detection, cumulative exfiltration detection, risk score boosters, and indicator-threshold pages. Accept the Microsoft-provided defaults on those pages; do not replace the four required indicators.
+7. On the indicator-threshold page, select **Use default thresholds for all indicators**.
+8. Stop on **Review** and compare the summary with this required configuration:
 
    | Setting | Required value |
    |---|---|
    | Policy name | `Zava Departing Employee Data Theft` |
    | Policy creation choice | `Custom policy` |
    | Template | `Data theft by departing users` |
-   | Users and groups | Include all users and groups |
+   | Users and groups | All users, groups, and adaptive scopes |
    | Trigger | `User account deleted from Microsoft Entra` |
    | First content-priority stage | I want to prioritize content |
    | Content-priority detail stage | `Zava Highly Confidential`; get alerts for all activity |
    | Office policy indicators | All four required indicators |
    | Indicator thresholds | Use default thresholds for all indicators |
 
-8. Correct any mismatch with **Edit**, return to **Review**, and select **Submit**.
-9. Return to **Policies** and confirm that `Zava Departing Employee Data Theft` appears in the user-policy list.
+9. Correct any mismatch with **Edit**, return to **Review**, and select **Submit**.
+10. Return to **Policies** and confirm that `Zava Departing Employee Data Theft` appears in the user-policy list.
 
 ## Task 4: Cross-check the policy and record evidence on the Azure lab VM
 
