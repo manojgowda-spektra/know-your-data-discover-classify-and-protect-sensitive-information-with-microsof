@@ -22,6 +22,22 @@ function Test-TrueValue {
     return ("$Value" -ieq 'True')
 }
 
+# Get-Label leaves the *Enabled marking flags empty and populates only the text.
+function Test-MarkingOn {
+    param([object]$Enabled, [object]$Text)
+    return ((Test-TrueValue $Enabled) -or -not [string]::IsNullOrWhiteSpace("$Text"))
+}
+
+# The Editor (formerly Co-Author) preset is stored as individual rights, not by name.
+function Test-CoAuthorRights {
+    param([object]$Value)
+    $text = "$Value"
+    if ($text -match '(?i)Co-Author|CoAuthor') { return $true }
+    $granted = @([regex]::Matches($text, '[A-Z]{3,}') | ForEach-Object { $_.Value.ToUpperInvariant() })
+    $required = @('VIEW', 'VIEWRIGHTSDATA', 'DOCEDIT', 'EDIT', 'PRINT', 'EXTRACT', 'REPLY', 'REPLYALL', 'FORWARD', 'OBJMODEL')
+    return (@($required | Where-Object { $granted -notcontains $_ }).Count -eq 0 -and $granted -notcontains 'OWNER')
+}
+
 function Test-EnabledLocation {
     param([object]$Value)
     $values = @($Value) | ForEach-Object { if ($null -ne $_) { "$($_)".Trim() } }
@@ -177,15 +193,15 @@ do {
         if ($labels.ContainsKey('Zava Public')) {
             $label = $labels['Zava Public']
             if (-not (Test-ExactSet $label.ContentType @('File', 'Email'))) { $failures.Add("'Zava Public' must be scoped only to File and Email.") }
-            if ((Test-TrueValue $label.EncryptionEnabled) -or (Test-TrueValue $label.ApplyContentMarkingHeaderEnabled) -or (Test-TrueValue $label.ApplyContentMarkingFooterEnabled) -or (Test-TrueValue $label.ApplyWaterMarkingEnabled)) {
+            if ((Test-TrueValue $label.EncryptionEnabled) -or (Test-MarkingOn $label.ApplyContentMarkingHeaderEnabled $label.ApplyContentMarkingHeaderText) -or (Test-MarkingOn $label.ApplyContentMarkingFooterEnabled $label.ApplyContentMarkingFooterText) -or (Test-MarkingOn $label.ApplyWaterMarkingEnabled $label.ApplyWaterMarkingText)) {
                 $failures.Add("'Zava Public' must have no encryption, header, footer, or watermark.")
             }
         }
         if ($labels.ContainsKey('Zava Internal')) {
             $label = $labels['Zava Internal']
             if (-not (Test-ExactSet $label.ContentType @('File', 'Email'))) { $failures.Add("'Zava Internal' must be scoped only to File and Email.") }
-            if (-not (Test-TrueValue $label.ApplyContentMarkingHeaderEnabled) -or "$($label.ApplyContentMarkingHeaderText)" -cne 'Zava Internal') { $failures.Add("'Zava Internal' must enable exact header text 'Zava Internal'.") }
-            if ((Test-TrueValue $label.EncryptionEnabled) -or (Test-TrueValue $label.ApplyContentMarkingFooterEnabled) -or (Test-TrueValue $label.ApplyWaterMarkingEnabled)) { $failures.Add("'Zava Internal' must have no encryption, footer, or watermark.") }
+            if (-not (Test-MarkingOn $label.ApplyContentMarkingHeaderEnabled $label.ApplyContentMarkingHeaderText) -or "$($label.ApplyContentMarkingHeaderText)" -cne 'Zava Internal') { $failures.Add("'Zava Internal' must enable exact header text 'Zava Internal'.") }
+            if ((Test-TrueValue $label.EncryptionEnabled) -or (Test-MarkingOn $label.ApplyContentMarkingFooterEnabled $label.ApplyContentMarkingFooterText) -or (Test-MarkingOn $label.ApplyWaterMarkingEnabled $label.ApplyWaterMarkingText)) { $failures.Add("'Zava Internal' must have no encryption, footer, or watermark.") }
         }
         foreach ($name in @('Zava Confidential', 'Zava Highly Confidential')) {
             if ($labels.ContainsKey($name)) {
@@ -194,11 +210,11 @@ do {
                 $types = if ($name -ceq 'Zava Confidential') { @('File', 'Email') } else { @('File', 'Email', 'Site', 'UnifiedGroup') }
                 if (-not (Test-ExactSet $label.ContentType $types)) { $failures.Add("'$name' has an incorrect scope; expected only $($types -join ', ').") }
                 if (-not (Test-TrueValue $label.EncryptionEnabled)) { $failures.Add("'$name' must enable encryption.") }
-                if (-not (Test-TrueValue $label.ApplyWaterMarkingEnabled) -or "$($label.ApplyWaterMarkingText)" -cne $watermark) { $failures.Add("'$name' must enable exact watermark '$watermark'.") }
-                if ((Test-TrueValue $label.ApplyContentMarkingHeaderEnabled) -or (Test-TrueValue $label.ApplyContentMarkingFooterEnabled)) { $failures.Add("'$name' must not enable a header or footer.") }
+                if (-not (Test-MarkingOn $label.ApplyWaterMarkingEnabled $label.ApplyWaterMarkingText) -or "$($label.ApplyWaterMarkingText)" -cne $watermark) { $failures.Add("'$name' must enable exact watermark '$watermark'.") }
+                if ((Test-MarkingOn $label.ApplyContentMarkingHeaderEnabled $label.ApplyContentMarkingHeaderText) -or (Test-MarkingOn $label.ApplyContentMarkingFooterEnabled $label.ApplyContentMarkingFooterText)) { $failures.Add("'$name' must not enable a header or footer.") }
                 if ("$($label.EncryptionProtectionType)" -notmatch '(?i)Template|AdminDefined') { $failures.Add("'$name' must use administrator-assigned permissions.") }
                 if ("$($label.EncryptionContentExpiredOnDateInDaysOrNever)" -ine 'Never' -or [int]$label.EncryptionOfflineAccessDays -ne -1) { $failures.Add("'$name' online and offline access must never expire.") }
-                if ("$($label.EncryptionRightsDefinitions)" -notmatch '(?i)Co-Author|CoAuthor') { $failures.Add("'$name' must grant the internal audience Co-Author rights.") }
+                if (-not (Test-CoAuthorRights $label.EncryptionRightsDefinitions)) { $failures.Add("'$name' must grant the internal audience Co-Author rights.") }
             }
         }
         if ($labels.ContainsKey('Zava Highly Confidential')) {
