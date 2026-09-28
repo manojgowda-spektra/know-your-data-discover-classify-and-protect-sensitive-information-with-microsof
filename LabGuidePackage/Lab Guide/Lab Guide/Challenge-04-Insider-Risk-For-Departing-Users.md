@@ -118,7 +118,7 @@ In this task, you will perform a guided portal cross-check and merge a compact, 
 
    $subscriptionId = (Get-AzContext).Subscription.Id
    $contextConfirmed = Read-Host 'After comparing this output with the lab context in the Azure portal, type YES to continue'
-   if ($contextConfirmed -cne 'YES') {
+   if ($contextConfirmed.Trim() -ine 'YES') {
        throw 'The active Azure context was not confirmed as the lab context. Select the correct context and retry.'
    }
 
