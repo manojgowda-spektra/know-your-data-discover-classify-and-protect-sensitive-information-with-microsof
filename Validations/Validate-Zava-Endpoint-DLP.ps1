@@ -131,6 +131,22 @@ function Get-SiteGroupNames {
     return $map
 }
 
+# Members of a custom sensitive service domain group, as "url|matchtype" in lower case.
+function Get-SiteGroupMembers {
+    param([string]$GroupName)
+    try {
+        $siteGroups = (Get-PolicyConfig -ErrorAction Stop).SiteGroups
+        if ($siteGroups -is [string]) { $siteGroups = $siteGroups | ConvertFrom-Json -ErrorAction Stop }
+        foreach ($group in @($siteGroups)) {
+            if ([string](Get-IgnoreCaseValue $group 'Name') -cne $GroupName) { continue }
+            return @(@(Get-IgnoreCaseValue $group 'Addresses') | Where-Object { $_ } | ForEach-Object {
+                ("{0}|{1}" -f (Get-IgnoreCaseValue $_ 'Url'), (Get-IgnoreCaseValue $_ 'MatchType')).ToLowerInvariant()
+            })
+        }
+    } catch { }
+    return $null
+}
+
 # EndpointDlpRestrictions store one entry per setting (RemovableMedia, CloudEgress, PasteToBrowser...)
 # with value Block/Audit, and reference domain groups by id.
 function Test-EndpointSettingBlocked {
@@ -253,6 +269,13 @@ do {
         $allPolicies = @(Get-DlpCompliancePolicy -IncludeExtendedProperties $true -ErrorAction Stop)
         $siteGroups = Get-SiteGroupNames
         $failures = [System.Collections.Generic.List[string]]::new()
+        $members = Get-SiteGroupMembers -GroupName 'Zava Unsanctioned Cloud Storage'
+        $expectedMembers = @('dropbox.com|urlmatch', 'drive.google.com|urlmatch', 'box.com|urlmatch')
+        if ($null -eq $members) {
+            $failures.Add("Sensitive service domain group 'Zava Unsanctioned Cloud Storage' was not found in Endpoint DLP settings.")
+        } elseif (@($expectedMembers | Where-Object { $members -notcontains $_ }).Count -gt 0 -or @($members | Where-Object { $expectedMembers -notcontains $_ }).Count -gt 0) {
+            $failures.Add("'Zava Unsanctioned Cloud Storage' must contain exactly dropbox.com, drive.google.com, and box.com with match type URL; found: $(@($members) -join ', ').")
+        }
 
         foreach ($item in $expected) {
             $policyMatches = @($allPolicies | Where-Object { $_.Name -ceq $item.Policy })
@@ -299,13 +322,13 @@ do {
             $found = $true
             $message = @{
                 Status  = 'Succeeded'
-                Message = "Validated the exact three Zava Endpoint DLP policies and rules: enforcing mode, Devices-only scope, either-SIT conditions, required Block actions, rule reference to 'Zava Unsanctioned Cloud Storage', and built-in 'Generative AI Websites'. Microsoft exposes no supported public PowerShell cmdlet or API to enumerate Sensitive service domain group members, so the exact custom members dropbox.com, drive.google.com, and box.com require the documented portal cross-check and were not falsely graded. Policy sync, policy tips, and Activity explorer telemetry were not checked. Validated for $scope."
+                Message = "Validated the exact three Zava Endpoint DLP policies and rules: enforcing mode, Devices-only scope, either-SIT conditions, required Block actions, rule reference to 'Zava Unsanctioned Cloud Storage', and built-in 'Generative AI Websites'. 'Zava Unsanctioned Cloud Storage' contains exactly dropbox.com, drive.google.com, and box.com. Policy sync, policy tips, and Activity explorer telemetry were not checked. Validated for $scope."
             } | ConvertTo-Json
         }
         else {
             $message = @{
                 Status  = 'Failed'
-                Message = ("Validation failed for ${scope}: " + ($failures -join ' ') + " Custom group membership for dropbox.com, drive.google.com, and box.com is not queryable through a supported public PowerShell cmdlet/API and must be portal-cross-checked; policy sync, policy tips, and Activity explorer are intentionally not graded.")
+                Message = ("Validation failed for ${scope}: " + ($failures -join ' ') + " Policy sync, policy tips, and Activity explorer are intentionally not graded.")
             } | ConvertTo-Json
         }
 
