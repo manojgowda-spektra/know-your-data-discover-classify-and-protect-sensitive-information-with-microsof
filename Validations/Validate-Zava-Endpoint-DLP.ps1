@@ -16,6 +16,11 @@ function ConvertTo-SearchText {
         return ""
     }
 
+    # AdvancedRule is already JSON text; re-encoding it would escape every quote.
+    if ($InputObject -is [string]) {
+        return $InputObject.ToLowerInvariant()
+    }
+
     try {
         return (($InputObject | ConvertTo-Json -Depth 100 -Compress -ErrorAction Stop) -replace '\u0026', '&').ToLowerInvariant()
     }
