@@ -311,6 +311,30 @@ In this task, you will configure an auto-labeling policy that evaluates content 
 
 10. Review the summary and create the policy. Confirm the policy appears in the **Simulation** section.
 
+If **Create policy** fails with *"Please make sure audit log search is turned on"* even though Task 1 printed `True`, the portal's audit check is lagging behind the service. Create the policy in Security & Compliance PowerShell instead, then add the rules in the portal:
+
+1. In a Security & Compliance PowerShell session, run:
+
+   ```powershell
+   New-AutoSensitivityLabelPolicy -Name "Zava Auto-Label Policy" -ApplySensitivityLabel "Zava Highly Confidential" -ExchangeLocation All -SharePointLocation All -OneDriveLocation All -Mode TestWithoutNotifications
+   ```
+
+2. In the portal, open **Auto-labeling policies**, select `Zava Auto-Label Policy`, and select **...** > **Edit**. Advance to the rules pages. A policy created in PowerShell has one rules page per location, and rule names must be unique, so name the three rules:
+
+   - **Exchange email**: `Zava High-Risk Identity Data Rule`
+   - **SharePoint files**: `Zava High-Risk Identity Data Rule - SharePoint`
+   - **OneDrive files**: `Zava High-Risk Identity Data Rule - OneDrive`
+
+   Give each rule the condition from step 6: **Credit Card Number** and **U.S. Social Security Number (SSN)**, each with minimum instance count `5`, in one **Any of these** group.
+
+3. Keep **Run policy in simulation mode** and select **Save policy**. If the portal reports *"you must enable AIP Integration at Sharepoint"*, the rules are already saved; confirm them in PowerShell:
+
+   ```powershell
+   Get-AutoSensitivityLabelRule -Policy "Zava Auto-Label Policy" | Format-List Name, Disabled
+   ```
+
+   All three rules must be listed with `Disabled : False`.
+
 > [!Important] Never select an option that automatically activates this policy after seven days. Simulation results and labeling outcomes are not required for validation.
 
 > [!Important] The workload invariant for any DLP policy or DLP rule that uses a sensitivity-label condition is **Exchange, SharePoint, and OneDrive only**. **Teams must be off**. This prevents unsupported-workload failures. The object created in this task is an auto-labeling policy rather than a DLP policy, and its service-side locations are likewise Exchange, SharePoint, and OneDrive; Teams is not a selected location.
@@ -354,7 +378,8 @@ In this task, you will inspect the immediate tenant configuration without waitin
 5. Verify the exact rule name and inspect its sensitive-information condition.
 
    ```powershell
-   Get-AutoSensitivityLabelRule -Identity "Zava High-Risk Identity Data Rule" | Format-List Name, Policy, Disabled, ContentContainsSensitiveInformation
+   Get-AutoSensitivityLabelRule -Identity "Zava High-Risk Identity Data Rule" | Format-List Name, Policy, Disabled
+   Get-AutoSensitivityLabelRule -Identity "Zava High-Risk Identity Data Rule" | Select-Object -ExpandProperty AdvancedRule
    ```
 
 6. Re-confirm the three prerequisites and check that each prints `True`. Run each check where its module is already connected: the audit check in an Exchange Online session, the SharePoint check in the SharePoint session from Task 2, and the group-labeling check in the Microsoft Graph window from Task 3. Do not run the Microsoft Graph command in the Exchange Online window.
