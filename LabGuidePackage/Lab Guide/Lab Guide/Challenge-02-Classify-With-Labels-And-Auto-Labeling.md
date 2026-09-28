@@ -62,6 +62,8 @@ In this task, you will use Exchange Online PowerShell to prove that unified audi
    True
    ```
 
+   If `Set-AdminAuditLogConfig` keeps failing with the *Enable-OrganizationCustomization* error even though that command reports the organization is already enabled, turn auditing on from the portal instead: in Microsoft Purview open **Solutions** > **Audit**, and select **Start recording user and admin activity** if it is shown. Continue with Task 2, and after about 20 minutes re-run `(Get-AdminAuditLogConfig).UnifiedAuditLogIngestionEnabled` in the Exchange Online session. It must print `True` before Task 6. Even then, the auto-labeling policy in Task 6 can be refused with *"Please make sure audit log search is turned on"* for up to an hour while the change propagates; wait and submit again.
+
 > [!Important] Run `Get-AdminAuditLogConfig` in the Exchange Online session, not the Security & Compliance session. Microsoft documents that the same property can incorrectly appear as `False` in Security & Compliance PowerShell.
 
 > [!Important] Do not continue unless the positive assertion prints `True`. If it prints `False`, contact the lab operator immediately and continue with Task 2 while they resolve it. Do not wait idle: auditing must be `True` before Task 5, not before Task 2.
