@@ -31,15 +31,13 @@ In this task, you will use Exchange Online PowerShell to prove that unified audi
    Connect-ExchangeOnline -ShowBanner:$false
    ```
 
-2. Enable organization customization. A newly provisioned Microsoft 365 tenant is **dehydrated**, which blocks the command in the next step. Run this first and wait for it to finish.
+2. Enable organization customization. A newly provisioned Microsoft 365 tenant is **dehydrated**, which blocks the command in the next step. Run this first and wait for it to finish. Run it even if `(Get-OrganizationConfig).IsDehydrated` reports `False`: the next step can still demand it.
 
    ```powershell
-   if ((Get-OrganizationConfig).IsDehydrated) {
-       Enable-OrganizationCustomization
-   }
+   Enable-OrganizationCustomization
    ```
 
-   This takes a few minutes. If it reports that the organization is already enabled for customization, continue to the next step.
+   This takes a few minutes. If it reports that the organization is already enabled for customization, continue to the next step. If step 3 still fails with the error below, wait 10 minutes and run step 3 again - the change takes time to reach the audit service.
 
    > [!Important] Without this, the next step fails with *"The command you tried to run isn't currently allowed in your organization. To run this command, you first need to run the command: Enable-OrganizationCustomization."*
 
