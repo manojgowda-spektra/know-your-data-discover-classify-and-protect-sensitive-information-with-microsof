@@ -29,8 +29,20 @@ After completing this introduction, you will be able to:
 
 4. Confirm that you can use the dedicated Windows lab VM and Microsoft Edge. Edge is the required browser for validation and endpoint testing. Chrome and Firefox can be used for supported endpoint actions only when the Microsoft Purview extension is installed.
 5. Keep the supplied Temporary Access Pass private. Use it only for interactive sign-in when requested. Never place it in a script, file, log, command history, or noninteractive credential object.
-6. Be aware that the operator assigned Microsoft 365 E5, Global Administrator and the required Microsoft Purview role groups before delivery. The lab VM is **not** onboarded to Microsoft Purview; Challenge 3 explains why and is graded on configuration only.
-7. The required Microsoft Purview role-group assignments are `Information Protection`, `Content Explorer List Viewer`, `Content Explorer Content Viewer`, `Insider Risk Management`, and `Compliance Administrator`.
+6. Be aware that the operator assigned Microsoft 365 E5 and Global Administrator before delivery. The lab VM is **not** onboarded to Microsoft Purview; Challenge 3 explains why and is graded on configuration only.
+7. Add yourself to the Microsoft Purview role groups the lab uses. Global Administrator alone does not show the Insider Risk Management **Alerts** page, which you need in Challenge 4. On the lab VM, open a new **Windows PowerShell** window, run the commands below, and sign in with your lab account when prompted. Paste your username, <inject key="AzureAdUserEmail"></inject>, when the script asks for it.
+
+   ```powershell
+   Connect-IPPSSession
+   $me = Read-Host "Paste your lab username"
+   foreach ($group in 'InformationProtection','ContentExplorerListViewer','ContentExplorerContentViewer','InsiderRiskManagement','ComplianceAdministrator') {
+       try { Add-RoleGroupMember -Identity $group -Member $me -ErrorAction Stop; "Added to $group" }
+       catch { "$group : $($_.Exception.Message)" }
+   }
+   Get-RoleGroupMember -Identity InsiderRiskManagement | Select-Object Name
+   ```
+
+   Confirm that your account is listed. Role-group changes can take up to 30 minutes to reach the portal, so do this before Challenge 1. If a line reports that you are already a member, that group is fine.
 
 > [!IMPORTANT]
 > Nothing used as learner evidence is pre-seeded. There are **no sample documents**, **no sensitivity labels**, **no completed simulation results**, **no HR connector data**, and **no existing insider-risk alerts**. **Security Copilot is not provisioned and is not required.** You will generate all evidence during the lab.

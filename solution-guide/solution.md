@@ -117,7 +117,7 @@ Get-DlpComplianceRule -Policy 'Zava Block Removable Storage' |
   Format-List Name,ContentContainsSensitiveInformation,EndpointDlpRestrictions
 ```
 
-Expected output is three enforcing Devices-only policies with the specified rules. Inspect action semantics and domain membership in the current Purview portal because endpoint-DLP API property names vary. Expected learner interpretation: removable-media exfiltration, unsanctioned-cloud upload, and generative-AI paste/upload are three distinct risks.
+Expected output is three enforcing Devices-only policies with the specified rules. In Security & Compliance PowerShell, each rule's `EndpointDlpRestrictions` lists settings `RemovableMedia`, `CloudEgress` and `PasteToBrowser` with value `Block`, and references domain groups by id in `cloudEgressGroup` and `pasteSensitiveDomainsGroup`. `(Get-PolicyConfig).SiteGroups` maps custom group ids to names and lists their addresses; the built-in `Generative AI Websites` group does not appear there. Expected learner interpretation: removable-media exfiltration, unsanctioned-cloud upload, and generative-AI paste/upload are three distinct risks.
 
 Common failures: learner attempts onboarding, testing before sync, using Chrome/Firefox without the Purview extension, creating a replacement AI group, confusing sensitive service domain groups with Restricted apps and app groups, omitting content conditions, or treating absent telemetry as failure.
 
