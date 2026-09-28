@@ -74,11 +74,11 @@ In this task, you will distribute the controlled documents between the two Micro
 
 In this task, you will create a custom advanced DLP policy that inspects only SharePoint and OneDrive and remains non-enforcing.
 
-1. In the Microsoft Purview portal, open **Data Loss Prevention** > **Policies**, start a new policy, and select the **Custom** category and **Custom policy** template.
+1. In the Microsoft Purview portal, open **Data Loss Prevention** > **Policies** and select **Create policy**. On **What info do you want to protect?**, select **Enterprise applications & devices**, then select the **Custom** category and the **Custom policy** template.
 
 2. Name the policy **Zava Discovery Baseline**, retain the **Full directory** administrative scope, and provide a description stating that the policy discovers synthetic payment and identity data without enforcement.
 
-3. On the locations page, leave only **SharePoint sites** and **OneDrive accounts** enabled. Turn off Exchange email, Teams chat and channel messages, Devices, On-premises repositories, and Fabric and Power BI workspaces. Keep all SharePoint sites and all OneDrive accounts included.
+3. On the locations page, leave only **SharePoint sites** and **OneDrive accounts** enabled. Several other locations start switched on - turn off every one of them: **Exchange email**, **Teams chat and channel messages**, **Devices**, **Instances** and **On-premises repositories**. The list can take a few seconds to finish loading, so check it again before you continue. Keep all SharePoint sites and all OneDrive accounts included.
 
 4. Select **Create or customize advanced DLP rules**, then create a rule named **Zava Discovery Sensitive Data Rule**.
 
@@ -89,7 +89,7 @@ In this task, you will create a custom advanced DLP policy that inspects only Sh
 7. Review the configuration and confirm all of the following before submitting it:
 
    - The policy name and rule name exactly match the names specified in this challenge.
-   - SharePoint sites and OneDrive accounts are the only enabled locations.
+   - SharePoint sites and OneDrive accounts are the only enabled locations. Ignore the **Consider adding Teams as a location** suggestion on the review page.
    - Either of the two selected sensitive information types can satisfy the content condition.
    - The selected mode is simulation, not enforcement.
 
